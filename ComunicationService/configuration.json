@@ -1,0 +1,30 @@
+{
+"serial" : {
+	"portName" : "COM10",
+	"timeout":15
+},
+
+"server" : {
+	"host":"127.0.0.1",
+	"port": "7778",
+	"clientKey":"123456789ABCDEF",
+	"timeout" : 10
+},
+
+"commands" : {
+	"AT\r\n" : "OK",
+	"at\r\n" : "ok",
+	"AT+CREG=?\r\n" : "CREG: 0,1",
+	"ATE0\r\n" : "OK",
+	"AT+CSQ=?\r\n" : "CSQ: 32,1,0",
+	"Hello" : "Hi",
+	"How are you?": "I am fine thanks",
+	"ATD#50334411#\r\n" : "{start}",
+	"+++\r\n" : "{stop}"
+},
+
+"log" : {
+	"showLogLevel" : 2,
+	"saveLogLevel" : 5
+}
+}
