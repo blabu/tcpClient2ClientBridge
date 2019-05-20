@@ -90,7 +90,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions);JSON_IS_AMALGAMATION</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\boost\boost_1_68_0;C:\Users\BlaBu\source\repos\ComunicationService\ComunicationService\Logger;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\BlaBu\source\repos\ComunicationService\ComunicationService\clients;C:\boost\boost_1_68_0;C:\Users\BlaBu\source\repos\ComunicationService\ComunicationService\Logger;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp14</LanguageStandard>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <EnableParallelCodeGeneration>true</EnableParallelCodeGeneration>
@@ -108,9 +108,9 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);JSON_IS_AMALGAMATION</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);JSON_IS_AMALGAMATION;BOOST_ASIO_ENABLE_CANCELIO</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\boost\boost_1_68_0;C:\Users\BlaBu\source\repos\ComunicationService\ComunicationService\Logger;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\BlaBu\source\repos\ComunicationService\ComunicationService\clients;C:\boost\boost_1_68_0;C:\Users\BlaBu\source\repos\ComunicationService\ComunicationService\Logger;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <EnableParallelCodeGeneration>true</EnableParallelCodeGeneration>
       <LanguageStandard>stdcpp14</LanguageStandard>
@@ -132,7 +132,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions);JSON_IS_AMALGAMATION</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\boost\boost_1_68_0;C:\Users\BlaBu\source\repos\ComunicationService\ComunicationService\Logger;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\BlaBu\source\repos\ComunicationService\ComunicationService\clients;C:\boost\boost_1_68_0;C:\Users\BlaBu\source\repos\ComunicationService\ComunicationService\Logger;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp14</LanguageStandard>
       <EnableParallelCodeGeneration>true</EnableParallelCodeGeneration>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
@@ -153,9 +153,9 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);JSON_IS_AMALGAMATION</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);JSON_IS_AMALGAMATION;BOOST_ASIO_ENABLE_CANCELIO</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\boost\boost_1_68_0;C:\Users\BlaBu\source\repos\ComunicationService\ComunicationService\Logger;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\BlaBu\source\repos\ComunicationService\ComunicationService\clients;C:\boost\boost_1_68_0;C:\Users\BlaBu\source\repos\ComunicationService\ComunicationService\Logger;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <EnableParallelCodeGeneration>true</EnableParallelCodeGeneration>
       <LanguageStandard>stdcpp14</LanguageStandard>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
@@ -169,21 +169,33 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="clients\BaseClient.hpp" />
     <ClInclude Include="clients\IBaseClient.hpp" />
     <ClInclude Include="clients\messagesDTO.hpp" />
+    <ClInclude Include="clients\ModemClient.hpp" />
+    <ClInclude Include="clients\ProtocolDecorator.hpp" />
+    <ClInclude Include="clients\SerialClient.hpp" />
+    <ClInclude Include="clients\TcpClient.hpp" />
     <ClInclude Include="json.hpp" />
     <ClInclude Include="Logger\FileLoger.hpp" />
     <ClInclude Include="Logger\ILogerWriter.h" />
     <ClInclude Include="Logger\Loger.hpp" />
     <ClInclude Include="Logger\StatusInterface.hpp" />
+    <ClInclude Include="MainProjectLoger.hpp" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="clients\IBaseClient.cpp" />
+    <ClCompile Include="clients\BaseClient.cpp" />
+    <ClCompile Include="clients\ModemClient.cpp" />
+    <ClCompile Include="clients\ProtocolDecorator.cpp" />
+    <ClCompile Include="clients\SerialClient.cpp" />
+    <ClCompile Include="clients\TcpClient.cpp" />
     <ClCompile Include="ComunicationService.cpp" />
+    <ClCompile Include="ComunicationService.hpp" />
     <ClCompile Include="Logger\FileLoger.cpp" />
     <ClCompile Include="Logger\Loger.cpp" />
+    <ClCompile Include="Main.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

@@ -1,14 +1,14 @@
 {
 "serial" : {
 	"portName" : "COM10",
-	"timeout":15
+	"timeout":100
 },
 
 "server" : {
 	"host":"127.0.0.1",
-	"port": "7778",
-	"clientKey":"123456789ABCDEF",
-	"timeout" : 10
+	"port": "3555",
+	"clientKey":"123456",
+	"timeout" : 100
 },
 
 "commands" : {
@@ -19,12 +19,12 @@
 	"AT+CSQ=?\r\n" : "CSQ: 32,1,0",
 	"Hello" : "Hi",
 	"How are you?": "I am fine thanks",
-	"ATD#50334411#\r\n" : "{start}",
-	"+++\r\n" : "{stop}"
+	"{start}" : "^[Aa][Tt][Dd](#|\\+)?[0-9]+[#\\r\\n]+",
+	"{stop}"  : "^(\\+\\+\\+)[#\\r\\n]+"
 },
 
 "log" : {
-	"showLogLevel" : 2,
+	"showLogLevel" : 5,
 	"saveLogLevel" : 5
 }
 }
