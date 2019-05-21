@@ -5,8 +5,10 @@
 
 class ProtocolDecorator : public IBaseClient {
 	static const std::string connectHeader;
+	static const char startPackage;
+	static const char stopPackage;
 	std::shared_ptr<TcpClient> clientDelegate;
-	void emmitNewDataSlot(const message_ptr& m) { receiveNewData(m); }
+	void emmitNewDataSlot(const message_ptr m);
 public:
 	ProtocolDecorator(boost::asio::io_service *const srv, const std::string& host, const std::string& port, const std::string& key, const std::string& deviceID);
 	void sendNewData(const message_ptr& msg);

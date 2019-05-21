@@ -24,7 +24,7 @@
 },
 
 "log" : {
-	"showLogLevel" : 5,
+	"showLogLevel" : 3,
 	"saveLogLevel" : 5
 }
 }

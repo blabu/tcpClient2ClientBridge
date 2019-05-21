@@ -125,7 +125,7 @@ std::string ModemClient::write(const std::string & command, const std::string & 
 }
 
 void ModemClient::sendNewData(const message_ptr & msg) {   // Пришли новые данные с последовательного порта
-	auto answer = write(std::string((char*)msg->data())); // Проверяем е команда ли это
+	auto answer = write(msg->toString()); // Проверяем команда ли это?
 	if (!isStarted.load()) { // Если модуль не запущен
 		globalLog.addLog(Loger::L_TRACE, "TCP client is stoped and form answer to serial: ", answer);
 		receiveNewData(message_ptr(new message(answer))); // Формируем ответ сгенерированный имитатором модема

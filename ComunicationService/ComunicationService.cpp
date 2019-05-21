@@ -22,7 +22,7 @@ void CommunictionService::readConfigurationFile(const std::string & configFile) 
 /*
 Читает конфигурационный файл и инициализирует всех клиентов программы
 */
-CommunictionService::CommunictionService(boost::asio::io_service * s, const std::string & atCommandFile) : srv(s) {
+CommunictionService::CommunictionService(boost::asio::io_service * const s, const std::string & atCommandFile) : srv(s) {
 	readConfigurationFile(atCommandFile);
 	Loger::setShowLevel(configuration.at("log").at("showLogLevel").get<unsigned int>());
 	Loger::setSaveLevel(configuration.at("log").at("saveLogLevel").get<unsigned int>());

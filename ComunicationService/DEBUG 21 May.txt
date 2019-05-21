@@ -1,0 +1,104 @@
+Start loging DEBUG
+|*|21 May 13:59:44|*|<GLOBAL>|*|Start loging GLOBAL|*|
+
+|*|21 May 13:59:44|*|<GLOBAL>|*|Key AT
+ Value OK|*|
+
+|*|21 May 13:59:44|*|<GLOBAL>|*|Key AT+CREG=?
+ Value CREG: 0,1|*|
+
+|*|21 May 13:59:44|*|<GLOBAL>|*|Key AT+CSQ=?
+ Value CSQ: 32,1,0|*|
+
+|*|21 May 13:59:44|*|<GLOBAL>|*|Key ATE0
+ Value OK|*|
+
+|*|21 May 13:59:44|*|<GLOBAL>|*|Key Hello Value Hi|*|
+
+|*|21 May 13:59:44|*|<GLOBAL>|*|Key How are you? Value I am fine thanks|*|
+
+|*|21 May 13:59:44|*|<GLOBAL>|*|Key at
+ Value ok|*|
+
+|*|21 May 13:59:44|*|<GLOBAL>|*|Key {start} Value ^[Aa][Tt][Dd](#|\+)?[0-9]+[#\r\n]+|*|
+
+|*|21 May 13:59:44|*|<GLOBAL>|*|Key {stop} Value ^(\+\+\+)[#\r\n]+|*|
+
+Start loging DEBUG
+|*|21 May 15:26:35|*|<GLOBAL>|*|Start loging GLOBAL|*|
+
+|*|21 May 15:26:36|*|<GLOBAL>|*|Key AT
+ Value OK|*|
+
+|*|21 May 15:26:36|*|<GLOBAL>|*|Key AT+CREG=?
+ Value CREG: 0,1|*|
+
+|*|21 May 15:26:36|*|<GLOBAL>|*|Key AT+CSQ=?
+ Value CSQ: 32,1,0|*|
+
+|*|21 May 15:26:36|*|<GLOBAL>|*|Key ATE0
+ Value OK|*|
+
+|*|21 May 15:26:36|*|<GLOBAL>|*|Key Hello Value Hi|*|
+
+|*|21 May 15:26:36|*|<GLOBAL>|*|Key How are you? Value I am fine thanks|*|
+
+|*|21 May 15:26:36|*|<GLOBAL>|*|Key at
+ Value ok|*|
+
+|*|21 May 15:26:36|*|<GLOBAL>|*|Key {start} Value ^[Aa][Tt][Dd](#|\+)?[0-9]+[#\r\n]+|*|
+
+|*|21 May 15:26:36|*|<GLOBAL>|*|Key {stop} Value ^(\+\+\+)[#\r\n]+|*|
+
+Start loging DEBUG
+|*|21 May 16:10:16|*|<GLOBAL>|*|Start loging GLOBAL|*|
+
+|*|21 May 16:10:17|*|<GLOBAL>|*|Key AT
+ Value OK|*|
+
+|*|21 May 16:10:17|*|<GLOBAL>|*|Key AT+CREG=?
+ Value CREG: 0,1|*|
+
+|*|21 May 16:10:17|*|<GLOBAL>|*|Key AT+CSQ=?
+ Value CSQ: 32,1,0|*|
+
+|*|21 May 16:10:17|*|<GLOBAL>|*|Key ATE0
+ Value OK|*|
+
+|*|21 May 16:10:17|*|<GLOBAL>|*|Key Hello Value Hi|*|
+
+|*|21 May 16:10:17|*|<GLOBAL>|*|Key How are you? Value I am fine thanks|*|
+
+|*|21 May 16:10:17|*|<GLOBAL>|*|Key at
+ Value ok|*|
+
+|*|21 May 16:10:17|*|<GLOBAL>|*|Key {start} Value ^[Aa][Tt][Dd](#|\+)?[0-9]+[#\r\n]+|*|
+
+|*|21 May 16:10:17|*|<GLOBAL>|*|Key {stop} Value ^(\+\+\+)[#\r\n]+|*|
+
+Start loging DEBUG
+|*|21 May 18:4:20|*|<GLOBAL>|*|Start loging GLOBAL|*|
+
+|*|21 May 18:4:20|*|<GLOBAL>|*|Key AT
+ Value OK|*|
+
+|*|21 May 18:4:20|*|<GLOBAL>|*|Key AT+CREG=?
+ Value CREG: 0,1|*|
+
+|*|21 May 18:4:20|*|<GLOBAL>|*|Key AT+CSQ=?
+ Value CSQ: 32,1,0|*|
+
+|*|21 May 18:4:20|*|<GLOBAL>|*|Key ATE0
+ Value OK|*|
+
+|*|21 May 18:4:20|*|<GLOBAL>|*|Key Hello Value Hi|*|
+
+|*|21 May 18:4:20|*|<GLOBAL>|*|Key How are you? Value I am fine thanks|*|
+
+|*|21 May 18:4:20|*|<GLOBAL>|*|Key at
+ Value ok|*|
+
+|*|21 May 18:4:20|*|<GLOBAL>|*|Key {start} Value ^[Aa][Tt][Dd](#|\+)?[0-9]+[#\r\n]+|*|
+
+|*|21 May 18:4:20|*|<GLOBAL>|*|Key {stop} Value ^(\+\+\+)[#\r\n]+|*|
+
