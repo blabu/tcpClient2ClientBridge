@@ -11,7 +11,7 @@ class ProtocolDecorator : public IBaseClient {
 	std::shared_ptr<TcpClient> clientDelegate;
 	void emmitNewDataSlot(const message_ptr m);
 public:
-	ProtocolDecorator(boost::asio::io_service *const srv, const std::string& host, const std::string& port, const std::string& key, const std::string& deviceID);
+	ProtocolDecorator(boost::asio::io_service *const srv, const std::string& host, const std::string& port, const std::string& deviceID);
 	void sendNewData(const message_ptr& msg);
 	void close() noexcept;
 	void open();

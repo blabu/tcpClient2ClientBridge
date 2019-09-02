@@ -154,7 +154,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);JSON_IS_AMALGAMATION;BOOST_ASIO_ENABLE_CANCELIO</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);JSON_IS_AMALGAMATION;BOOST_ASIO_ENABLE_CANCELIO;_WIN32_WINNT=0x0501</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>C:\Users\BlaBu\source\repos\ComunicationService\ComunicationService\clients;C:\boost\boost_1_68_0;C:\Users\BlaBu\source\repos\ComunicationService\ComunicationService\Logger;C:\Users\BlaBu\source\repos\ComunicationService\ComunicationService;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <EnableParallelCodeGeneration>true</EnableParallelCodeGeneration>
@@ -174,26 +174,31 @@
     <ClInclude Include="clients\IBaseClient.hpp" />
     <ClInclude Include="clients\messagesDTO.hpp" />
     <ClInclude Include="clients\ModemClient.hpp" />
+    <ClInclude Include="clients\NewProtocolDecorator.hpp" />
     <ClInclude Include="clients\ProtocolDecorator.hpp" />
     <ClInclude Include="clients\SerialClient.hpp" />
     <ClInclude Include="clients\TcpClient.hpp" />
+    <ClInclude Include="Configuration.hpp" />
     <ClInclude Include="json.hpp" />
     <ClInclude Include="Logger\FileLoger.hpp" />
     <ClInclude Include="Logger\ILogerWriter.h" />
     <ClInclude Include="Logger\Loger.hpp" />
     <ClInclude Include="Logger\StatusInterface.hpp" />
     <ClInclude Include="MainProjectLoger.hpp" />
+    <ClInclude Include="picosha2.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="clients\BaseClient.cpp" />
     <ClCompile Include="clients\ModemClient.cpp" />
+    <ClCompile Include="clients\NewProtocolDecorator.cpp" />
     <ClCompile Include="clients\ProtocolDecorator.cpp" />
     <ClCompile Include="clients\SerialClient.cpp" />
     <ClCompile Include="clients\TcpClient.cpp" />
     <ClCompile Include="ComunicationService.cpp" />
     <ClCompile Include="ComunicationService.hpp" />
+    <ClCompile Include="Configuration.cpp" />
     <ClCompile Include="Logger\FileLoger.cpp" />
     <ClCompile Include="Logger\Loger.cpp" />
     <ClCompile Include="Main.cpp" />

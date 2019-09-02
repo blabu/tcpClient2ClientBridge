@@ -3,7 +3,6 @@
 #include "ModemClient.hpp"
 #include "../MainProjectLoger.hpp"
 
-std::string ModemClient::clientKey;
 std::map<std::string, std::string> ModemClient::vocabulary;
 std::string ModemClient::host;
 std::string ModemClient::port;
@@ -51,7 +50,7 @@ bool ModemClient::startCommandHandler(const std::string & command) {
 			}
 			isStarted.store(true);
 			isFirstMessage.store(true);
-			clientDelegate = std::shared_ptr<IBaseClient>(new ProtocolDecorator(srv, host, port, clientKey, device));
+			clientDelegate = std::shared_ptr<IBaseClient>(new ProtocolDecorator(srv, host, port, device));
 			clientDelegate->open();
 			clientDelegate->receiveNewData.connect(boost::bind(&ModemClient::emmitNewDataFromDelegate, this, _1));
 			return true;

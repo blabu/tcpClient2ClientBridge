@@ -1,7 +1,7 @@
 #ifndef COMMUNICATION_SERVICE_H
 #define COMMUNICATION_SERVICE_H
 
-#include "json.hpp"
+#include "Configuration.hpp"
 #include "ModemClient.hpp"
 #include "SerialClient.hpp"
 #include "MainProjectLoger.hpp"
@@ -16,8 +16,7 @@ class CommunicationService {
 	boost::asio::io_service* const srv;
 	std::shared_ptr<ModemClient> modem;
 	std::shared_ptr<SerialClient> serial;
-	nlohmann::json configuration;
-	void readConfigurationFile(const std::string& configFile);
+	const Configuration* const conf;
 public:
     CommunicationService(boost::asio::io_service *const s, const std::string& atCommandFile);
 	void run() {srv->run();}

@@ -2,43 +2,32 @@
 #include "MainProjectLoger.hpp"
 #include <fstream>
 #include <thread>
-
-void CommunicationService::readConfigurationFile(const std::string & configFile) {
-	globalLog.addLog(Loger::L_TRACE, "Try open AT command map file in json format: ", configFile);
-	std::ifstream file(configFile);
-	if (file.is_open()) { globalLog.addLog(Loger::L_TRACE, "File ", configFile, " opened"); }
-	globalLog.addLog(Loger::L_TRACE, "Try parse json file");
-	try {
-		file >> configuration;
-		file.close();
-	}
-	catch (...) {
-		globalLog.addLog(Loger::L_ERROR, "Unhandled ecxeption when try parse file ", configFile);
-		globalLog.snapShotLong();
-        std::this_thread::sleep_for(std::chrono::seconds(2));
-		exit(1);
-	}
-}
-
+#include <json.hpp>
 /*
 Читает конфигурационный файл и инициализирует всех клиентов программы
 */
-CommunicationService::CommunicationService(boost::asio::io_service * const s, const std::string & atCommandFile) : srv(s) {
-	readConfigurationFile(atCommandFile);
-    Loger::setShowLevel(configuration.at("log").at("showLogLevel").get<unsigned int>());
-	Loger::setSaveLevel(configuration.at("log").at("saveLogLevel").get<unsigned int>());
-	ModemClient::setHost(configuration.at("server").at("host").get<std::string>());
-	ModemClient::setPort(configuration.at("server").at("port").get<std::string>());
-	ModemClient::setClientKey(configuration.at("server").at("clientKey").get<std::string>());
-	auto commands = configuration.at("commands");
+CommunicationService::CommunicationService(boost::asio::io_service * const s, const std::string & atCommandFile) : srv(s), conf(Configuration::getConfiguration(atCommandFile)) {
+	std::string portName;
+	try {
+		Loger::setShowLevel(conf->getConfigInt("log:showLogLevel"));
+		Loger::setSaveLevel(conf->getConfigInt("log:saveLogLevel"));
+		ModemClient::setHost(conf->getConfigString("server:host"));
+		ModemClient::setPort(conf->getConfigString("server:port"));
+		SerialClient::setReadTimeout(conf->getConfigInt("serial:timeout"));
+		TcpClient::setReadTimeout(conf->getConfigInt("server:timeout"));
+		portName = conf->getConfigString("serial:portName");
+	}
+	catch (const nlohmann::detail::out_of_range&) {
+		globalLog.addLog(Loger::L_ERROR, "Out of range in json");
+		globalLog.snapShotLong();
+		std::exit(1);
+	}
+	auto commands = conf->at("commands");
 	for (auto& el : commands.items()) {
 		globalLog.addLog(Loger::L_DEBUG, "Key " + el.key(), " Value " + el.value().get<std::string>());
 		ModemClient::appendNewCommand(el.key(), el.value().get<std::string>());
 	}
-	SerialClient::setReadTimeout(configuration.at("serial").at("timeout").get<unsigned int>());
-	TcpClient::setReadTimeout(configuration.at("server").at("timeout").get<unsigned int>());
-	std::string portName(configuration.at("serial").at("portName").get<std::string>());
-
+	
 	modem = std::shared_ptr<ModemClient>(new ModemClient(srv));
 
 	serial = std::shared_ptr<SerialClient>(new SerialClient(srv, portName));

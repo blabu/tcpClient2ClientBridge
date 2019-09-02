@@ -7,7 +7,6 @@
 "server" : {
 	"host":"127.0.0.1",
 	"port": "3555",
-	"clientKey":"123456",
 	"timeout" : 100
 },
 
@@ -26,5 +25,10 @@
 "log" : {
 	"showLogLevel" : 3,
 	"saveLogLevel" : 5
+},
+
+"user" : {
+	"name" : "vasya",
+	"pass" : "123456"
 }
 }

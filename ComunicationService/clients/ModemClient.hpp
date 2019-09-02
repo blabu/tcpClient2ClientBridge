@@ -16,7 +16,6 @@ ModemClient - реализует базовый интерфейс клиент�
 передаваемого в конструктор класса
 */
 class ModemClient : public IBaseClient {
-	static std::string clientKey;
 	static std::map<std::string, std::string> vocabulary;
 	static std::string host;
 	static std::string port;
@@ -54,7 +53,6 @@ public:
 
 	static void setHost(const std::string& h) { host = h; }
 	static void setPort(const std::string& p) { port = p; }
-	static void setClientKey(const std::string& key) { clientKey = key; }
 	static void appendNewCommand(const std::string& command, const std::string& answer) {
 		vocabulary.insert(std::pair<std::string, std::string>(command, answer));
 	}

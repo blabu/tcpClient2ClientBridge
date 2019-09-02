@@ -1,11 +1,13 @@
 #include "ProtocolDecorator.hpp"
 #include "../MainProjectLoger.hpp"
+#include "../Configuration.hpp"
 #include <boost/beast/core/detail/base64.hpp>
 #include <boost/scoped_array.hpp>
 
 const std::string ProtocolDecorator::connectHeader("$V23="); // "$V23=" - передача только строковых данных как есть (в конце добавляем признак конца строки)
 const char ProtocolDecorator::startPackage = '#';
 const char ProtocolDecorator::stopPackage = '\n';
+
 
 void ProtocolDecorator::emmitNewDataSlot(const message_ptr m) { // Принял данные от clientDelegate передаю их дальше из сети в COM порт
 	globalLog.addLog(Loger::L_INFO, "Receive new messages ", m->toString(), ". And try decode it");
@@ -34,10 +36,11 @@ void ProtocolDecorator::emmitNewDataSlot(const message_ptr m) { // Принял 
 	}
 }
 
-ProtocolDecorator::ProtocolDecorator(boost::asio::io_service * const srv, const std::string & host, const std::string & port, const std::string & key, const std::string & deviceID) {
+ProtocolDecorator::ProtocolDecorator(boost::asio::io_service * const srv, const std::string & host, const std::string & port, const std::string & deviceID) {
 	ConnectionProperties c;
+	auto conf = Configuration::getConfiguration("");
 	c.Host = host; c.Port = port;
-	c.connectionString = connectHeader + key + ";" + deviceID + ";" + stopPackage; //protocol specific connection string 
+	c.connectionString = connectHeader + conf->getConfigString("user:name") + ";" + deviceID + ";" + stopPackage; //protocol specific connection string 
 	clientDelegate = std::shared_ptr<TcpClient>(new TcpClient(srv, c));
 	clientDelegate->receiveNewData.connect(boost::bind(&ProtocolDecorator::emmitNewDataSlot, this, _1));
 }

@@ -43,7 +43,7 @@ void TcpClient::connect() {
 		globalLog.addLog(Loger::L_WARNING, er.message().c_str());
 	}
 	globalLog.addLog(Loger::L_INFO, "All function has canceled before create new connection");
-    boost::asio::async_connect(sock, entryPoints, boost::bind(&TcpClient::connectionHandler, this, _1, _2));
+    boost::asio::async_connect(sock, entryPoints.cbegin(), boost::bind(&TcpClient::connectionHandler, this, _1, _2));
 	// Если подключение успешное отправим регистрационные данные
 }
 
