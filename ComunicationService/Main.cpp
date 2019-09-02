@@ -10,7 +10,7 @@ int main() {
 
 	boost::asio::io_service mainService;
 
-	CommunictionService MainApp(&mainService, "./config.json");
+	CommunicationService MainApp(&mainService, "./config.json");
 	MainApp.run();
 	Loger::snapShotLong();
 	return 0;
