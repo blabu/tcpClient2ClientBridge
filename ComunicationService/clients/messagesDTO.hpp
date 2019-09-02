@@ -1,8 +1,8 @@
 #ifndef MESSAGES_DTO
 #define MESSAGES_DTO
 
-#include <cstdio>
 #include <string>
+#include <cstring> // for memcpy
 #include <memory>
 
 class message {
@@ -13,13 +13,13 @@ public:
 	message(const std::size_t size) :sz(size), current(0), dat(new std::uint8_t[sz]) {}
 	message(const message&& m) : sz(m.sz), current(m.current), dat(std::move(m.dat)) {}
 	message(const message& m) : sz(m.current+(m.current>>1)), current(m.current), dat(new std::uint8_t[sz]) {
-		memcpy(dat, m.dat, current);
+        memcpy((void*)dat, (const void*)m.dat, current);
 	}
 	message(const std::string& m) : sz(m.size()+(m.size()>>1)), current(m.size()), dat(new std::uint8_t[sz]) {
-		memcpy(dat, m.c_str(), m.size());
+        memcpy(dat, m.c_str(), m.size());
 	}
 	message(const std::size_t size, std::uint8_t* const data) : sz(size+(size>>1)), current(size), dat(new std::uint8_t[sz]) {
-		memcpy(dat, data, size);
+        memcpy((void*)dat, (const void*)data, size);
 	}
 	~message() { if (dat != nullptr) delete[] dat; }
 	std::uint8_t *const data() const { return dat; }

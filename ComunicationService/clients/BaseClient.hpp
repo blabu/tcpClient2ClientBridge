@@ -10,18 +10,18 @@
 #include "IBaseClient.hpp"
 
 /*
-Абстрактный базовый класс для клиентов TCP и Serial.
-Содержит общий для конкретных клиентов код
-Каждый из наследников реализует свой метод write, котрый должен писать полученные в процессе работы программы данные в свой внешний интерфейс 
-(сокет или открытый последовательный порт)
+РђР±СЃС‚СЂР°РєС‚РЅС‹Р№ Р±Р°Р·РѕРІС‹Р№ РєР»Р°СЃСЃ РґР»СЏ РєР»РёРµРЅС‚РѕРІ TCP Рё Serial.
+РЎРѕРґРµСЂР¶РёС‚ РѕР±С‰РёР№ РґР»СЏ РєРѕРЅРєСЂРµС‚РЅС‹С… РєР»РёРµРЅС‚РѕРІ РєРѕРґ
+РљР°Р¶РґС‹Р№ РёР· РЅР°СЃР»РµРґРЅРёРєРѕРІ СЂРµР°Р»РёР·СѓРµС‚ СЃРІРѕР№ РјРµС‚РѕРґ write, РєРѕС‚СЂС‹Р№ РґРѕР»Р¶РµРЅ РїРёСЃР°С‚СЊ РїРѕР»СѓС‡РµРЅРЅС‹Рµ РІ РїСЂРѕС†РµСЃСЃРµ СЂР°Р±РѕС‚С‹ РїСЂРѕРіСЂР°РјРјС‹ РґР°РЅРЅС‹Рµ РІ СЃРІРѕР№ РІРЅРµС€РЅРёР№ РёРЅС‚РµСЂС„РµР№СЃ 
+(СЃРѕРєРµС‚ РёР»Рё РѕС‚РєСЂС‹С‚С‹Р№ РїРѕСЃР»РµРґРѕРІР°С‚РµР»СЊРЅС‹Р№ РїРѕСЂС‚)
 */
 class BaseClient : public IBaseClient {
 protected:
+    boost::asio::io_service *const service;
+    boost::asio::deadline_timer readTimer;
+    std::chrono::milliseconds readTimeout;
 	message readBuffer;
-	std::deque<message_ptr> MessagesQueue; // Очередь сообщений (работаем через нее)
-	std::chrono::milliseconds readTimeout;
-	boost::asio::deadline_timer readTimer;
-	boost::asio::io_service *const service;
+	std::deque<message_ptr> MessagesQueue; // РћС‡РµСЂРµРґСЊ СЃРѕРѕР±С‰РµРЅРёР№ (СЂР°Р±РѕС‚Р°РµРј С‡РµСЂРµР· РЅРµРµ)
 
 	void updateTimer(boost::asio::deadline_timer&t, std::function<void(boost::system::error_code er)> handler, std::chrono::microseconds time);
 	BaseClient() = delete;
@@ -30,7 +30,7 @@ protected:
 public:
 	BaseClient(boost::asio::io_service*const srv, std::size_t readBufferSize, std::chrono::milliseconds ReadTmeout);
 	virtual ~BaseClient() {}
-	void sendNewData(const message_ptr& msg); // Частичная реализация интерфейса IBaseClient
+	void sendNewData(const message_ptr& msg); // Р§Р°СЃС‚РёС‡РЅР°СЏ СЂРµР°Р»РёР·Р°С†РёСЏ РёРЅС‚РµСЂС„РµР№СЃР° IBaseClient
 };
 
 

@@ -24,8 +24,8 @@ bool ModemClient::stopCommandHandler(const std::string & command) {
 bool ModemClient::startCommandHandler(const std::string & command) {
 	globalLog.addLog(Loger::L_TRACE, "Finded command is start");
 	if (!isStarted.load()) {
-		auto identifier = command.find('+');// TODO Подключаемся
-		if (identifier == std::string::npos) { // Не нашли
+		auto identifier = command.find('+');// TODO РџРѕРґРєР»СЋС‡Р°РµРјСЃСЏ
+		if (identifier == std::string::npos) { // РќРµ РЅР°С€Р»Рё
 			globalLog.addLog(Loger::L_TRACE, "Not find start device number (symb #) in command ", command, ". Try find + ");
 			identifier = command.find('#');
 		}
@@ -64,10 +64,10 @@ bool ModemClient::startCommandHandler(const std::string & command) {
 std::string ModemClient::write(const std::string & command, const std::string & defaultAnswer) {
 	globalLog.addLog(Loger::L_INFO, "Modem receive command ", command);
 	try {
-		auto answer(vocabulary.at(command)); // Ищем ответ по словарю
-		auto startPos = command.find('{');	 // Если в ответе присутствуют фигурные скобки, значит это не ответ а команда к действию
+		auto answer(vocabulary.at(command)); // РС‰РµРј РѕС‚РІРµС‚ РїРѕ СЃР»РѕРІР°СЂСЋ
+		auto startPos = command.find('{');	 // Р•СЃР»Рё РІ РѕС‚РІРµС‚Рµ РїСЂРёСЃСѓС‚СЃС‚РІСѓСЋС‚ С„РёРіСѓСЂРЅС‹Рµ СЃРєРѕР±РєРё, Р·РЅР°С‡РёС‚ СЌС‚Рѕ РЅРµ РѕС‚РІРµС‚ Р° РєРѕРјР°РЅРґР° Рє РґРµР№СЃС‚РІРёСЋ
 		auto stopPos = command.find('}'); // 
-		if (startPos != std::string::npos && stopPos != std::string::npos && startPos < stopPos) { // Значит это команда на исполнение, а не готовый ответ
+		if (startPos != std::string::npos && stopPos != std::string::npos && startPos < stopPos) { // Р—РЅР°С‡РёС‚ СЌС‚Рѕ РєРѕРјР°РЅРґР° РЅР° РёСЃРїРѕР»РЅРµРЅРёРµ, Р° РЅРµ РіРѕС‚РѕРІС‹Р№ РѕС‚РІРµС‚
 			if (command.find("start") != std::string::npos) { // {start}
 				globalLog.addLog(Loger::L_INFO, "Finded start command");
 				if (startCommandHandler(command)) return defaultAnswer;
@@ -82,7 +82,7 @@ std::string ModemClient::write(const std::string & command, const std::string & 
 			globalLog.addLog(Loger::L_WARNING, "Undefined answer " + answer, " for command: " + command, ", so modem form empty string answer");
 			return std::string();
 		}
-		// Здесь мы если ответ был найден в словаре
+		// Р—РґРµСЃСЊ РјС‹ РµСЃР»Рё РѕС‚РІРµС‚ Р±С‹Р» РЅР°Р№РґРµРЅ РІ СЃР»РѕРІР°СЂРµ
 		if (!isStarted.load()) {
 			globalLog.addLog(Loger::L_INFO, "Modem form answer ", answer);
 			answer.append("\r\n");
@@ -92,13 +92,13 @@ std::string ModemClient::write(const std::string & command, const std::string & 
 			return std::string();
 		}
 	}
-	catch (std::out_of_range) { // Не найдена команда
-		// Если кроманда не найдена в словаре, и сессия не запущена пробуем сравнить наш запрос со стартом сессии или её стопом
+	catch (std::out_of_range) { // РќРµ РЅР°Р№РґРµРЅР° РєРѕРјР°РЅРґР°
+        // Р•СЃР»Рё РєРѕРјР°РЅРґР° РЅРµ РЅР°Р№РґРµРЅР° РІ СЃР»РѕРІР°СЂРµ, Рё СЃРµСЃСЃРёСЏ РЅРµ Р·Р°РїСѓС‰РµРЅР° РїСЂРѕР±СѓРµРј СЃСЂР°РІРЅРёС‚СЊ РЅР°С€ Р·Р°РїСЂРѕСЃ СЃРѕ СЃС‚Р°СЂС‚РѕРј СЃРµСЃСЃРёРё РёР»Рё РµС‘ СЃС‚РѕРїРѕРј
 		try {
 			if (!isStarted.load()) {
 				globalLog.addLog(Loger::L_TRACE, "Try find regular expresion for command ", command + " ", vocabulary.at("{start}"));
 				const std::regex regularExpressionStart(vocabulary.at("{start}"));
-				if (std::regex_match(command, regularExpressionStart)) { // Найдено совпадение (достаем номер устройства для связи)
+				if (std::regex_match(command, regularExpressionStart)) { // РќР°Р№РґРµРЅРѕ СЃРѕРІРїР°РґРµРЅРёРµ (РґРѕСЃС‚Р°РµРј РЅРѕРјРµСЂ СѓСЃС‚СЂРѕР№СЃС‚РІР° РґР»СЏ СЃРІСЏР·Рё)
 					globalLog.addLog(Loger::L_TRACE, "Regular expresion finded ");
 					if (startCommandHandler(command)) return defaultAnswer;
 					else return std::string();
@@ -106,13 +106,13 @@ std::string ModemClient::write(const std::string & command, const std::string & 
 			}
 			globalLog.addLog(Loger::L_TRACE, "Try find regular expresion for command ", command + " ", vocabulary.at("{stop}"));
 			const std::regex regularExpressionStart(vocabulary.at("{stop}"));
-			if (std::regex_match(command, regularExpressionStart)) { // Найдено совпадение (достаем номер устройства для связи)
+			if (std::regex_match(command, regularExpressionStart)) { // РќР°Р№РґРµРЅРѕ СЃРѕРІРїР°РґРµРЅРёРµ (РґРѕСЃС‚Р°РµРј РЅРѕРјРµСЂ СѓСЃС‚СЂРѕР№СЃС‚РІР° РґР»СЏ СЃРІСЏР·Рё)
 				globalLog.addLog(Loger::L_TRACE, "Regular expresion finded ");
 				if (stopCommandHandler(command)) return defaultAnswer;
 				else return std::string();
 			}
 		}
-		catch (std::out_of_range) { // Не определены такие команды как {start} и {stop}
+		catch (std::out_of_range) { // РќРµ РѕРїСЂРµРґРµР»РµРЅС‹ С‚Р°РєРёРµ РєРѕРјР°РЅРґС‹ РєР°Рє {start} Рё {stop}
 			return "ERROR. Please define {start} and {stop} command";
 		}
 		if (isStarted.load()) {
@@ -124,13 +124,13 @@ std::string ModemClient::write(const std::string & command, const std::string & 
 	}
 }
 
-void ModemClient::sendNewData(const message_ptr & msg) {   // Пришли новые данные с последовательного порта
-	auto answer = write(msg->toString()); // Проверяем команда ли это?
-	if (!isStarted.load()) { // Если модуль не запущен
+void ModemClient::sendNewData(const message_ptr & msg) {   // РџСЂРёС€Р»Рё РЅРѕРІС‹Рµ РґР°РЅРЅС‹Рµ СЃ РїРѕСЃР»РµРґРѕРІР°С‚РµР»СЊРЅРѕРіРѕ РїРѕСЂС‚Р°
+	auto answer = write(msg->toString()); // РџСЂРѕРІРµСЂСЏРµРј РєРѕРјР°РЅРґР° Р»Рё СЌС‚Рѕ?
+	if (!isStarted.load()) { // Р•СЃР»Рё РјРѕРґСѓР»СЊ РЅРµ Р·Р°РїСѓС‰РµРЅ
 		globalLog.addLog(Loger::L_TRACE, "TCP client is stoped and form answer to serial: ", answer);
-		receiveNewData(message_ptr(new message(answer))); // Формируем ответ сгенерированный имитатором модема
+		receiveNewData(message_ptr(new message(answer))); // Р¤РѕСЂРјРёСЂСѓРµРј РѕС‚РІРµС‚ СЃРіРµРЅРµСЂРёСЂРѕРІР°РЅРЅС‹Р№ РёРјРёС‚Р°С‚РѕСЂРѕРј РјРѕРґРµРјР°
 	}
-	else if (!isFirstMessage.load()) { // Если это не первое сообщение
+	else if (!isFirstMessage.load()) { // Р•СЃР»Рё СЌС‚Рѕ РЅРµ РїРµСЂРІРѕРµ СЃРѕРѕР±С‰РµРЅРёРµ
 		if (clientDelegate != nullptr && clientDelegate.get() != nullptr) {
 			globalLog.addLog(Loger::L_TRACE, "Try send new message to delegate");
 			clientDelegate->sendNewData(msg);

@@ -3,15 +3,15 @@
 #include <boost/beast/core/detail/base64.hpp>
 #include <boost/scoped_array.hpp>
 
-const std::string ProtocolDecorator::connectHeader("$V23="); // "$V23=" - передача только строковых данных как есть (в конце добавляем признак конца строки)
+const std::string ProtocolDecorator::connectHeader("$V23="); // "$V23=" - РїРµСЂРµРґР°С‡Р° С‚РѕР»СЊРєРѕ СЃС‚СЂРѕРєРѕРІС‹С… РґР°РЅРЅС‹С… РєР°Рє РµСЃС‚СЊ (РІ РєРѕРЅС†Рµ РґРѕР±Р°РІР»СЏРµРј РїСЂРёР·РЅР°Рє РєРѕРЅС†Р° СЃС‚СЂРѕРєРё)
 const char ProtocolDecorator::startPackage = '#';
 const char ProtocolDecorator::stopPackage = '\n';
 
-void ProtocolDecorator::emmitNewDataSlot(const message_ptr m) { // Принял данные от clientDelegate передаю их дальше из сети в COM порт
+void ProtocolDecorator::emmitNewDataSlot(const message_ptr m) { // РџСЂРёРЅСЏР» РґР°РЅРЅС‹Рµ РѕС‚ clientDelegate РїРµСЂРµРґР°СЋ РёС… РґР°Р»СЊС€Рµ РёР· СЃРµС‚Рё РІ COM РїРѕСЂС‚
 	globalLog.addLog(Loger::L_INFO, "Receive new messages ", m->toString(), ". And try decode it");
 	std::size_t sz = m->currentSize();
-	if (m->data() != nullptr && sz > 2) { // Парсим сообщение
-		if (m->data()[0] == startPackage && m->data()[sz-1] == stopPackage) { // Валидное сообщение
+	if (m->data() != nullptr && sz > 2) { // РџР°СЂСЃРёРј СЃРѕРѕР±С‰РµРЅРёРµ
+		if (m->data()[0] == startPackage && m->data()[sz-1] == stopPackage) { // Р’Р°Р»РёРґРЅРѕРµ СЃРѕРѕР±С‰РµРЅРёРµ
 			std::size_t decodedSize = boost::beast::detail::base64::decoded_size(sz-2);
 			boost::scoped_array<std::uint8_t> dat(new std::uint8_t[decodedSize]);
 			decodedSize = boost::beast::detail::base64::decode(dat.get(), m->toString().c_str()+1, sz-2).first;
@@ -25,7 +25,7 @@ void ProtocolDecorator::emmitNewDataSlot(const message_ptr m) { // Принял данные
 				message_ptr msg( new message( (m->currentSize()-pos-1), (m->data()+pos) ) );
 				receiveNewData(msg);
 			}
-			else { //TODO Обработка ошибки не корректного пакета
+			else { //TODO РћР±СЂР°Р±РѕС‚РєР° РѕС€РёР±РєРё РЅРµ РєРѕСЂСЂРµРєС‚РЅРѕРіРѕ РїР°РєРµС‚Р°
 				globalLog.addLog(Loger::L_INFO, "Undefine # in start message ", m->toString());
 				receiveNewData(m);
 			}

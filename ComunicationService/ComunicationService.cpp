@@ -1,8 +1,9 @@
 #include "ComunicationService.hpp"
 #include "MainProjectLoger.hpp"
 #include <fstream>
+#include <thread>
 
-void CommunictionService::readConfigurationFile(const std::string & configFile) {
+void CommunicationService::readConfigurationFile(const std::string & configFile) {
 	globalLog.addLog(Loger::L_TRACE, "Try open AT command map file in json format: ", configFile);
 	std::ifstream file(configFile);
 	if (file.is_open()) { globalLog.addLog(Loger::L_TRACE, "File ", configFile, " opened"); }
@@ -14,17 +15,17 @@ void CommunictionService::readConfigurationFile(const std::string & configFile) 
 	catch (...) {
 		globalLog.addLog(Loger::L_ERROR, "Unhandled ecxeption when try parse file ", configFile);
 		globalLog.snapShotLong();
-		std::this_thread::sleep_for(std::chrono::seconds(2));
+        std::this_thread::sleep_for(std::chrono::seconds(2));
 		exit(1);
 	}
 }
 
 /*
-Читает конфигурационный файл и инициализирует всех клиентов программы
+Р§РёС‚Р°РµС‚ РєРѕРЅС„РёРіСѓСЂР°С†РёРѕРЅРЅС‹Р№ С„Р°Р№Р» Рё РёРЅРёС†РёР°Р»РёР·РёСЂСѓРµС‚ РІСЃРµС… РєР»РёРµРЅС‚РѕРІ РїСЂРѕРіСЂР°РјРјС‹
 */
-CommunictionService::CommunictionService(boost::asio::io_service * const s, const std::string & atCommandFile) : srv(s) {
+CommunicationService::CommunicationService(boost::asio::io_service * const s, const std::string & atCommandFile) : srv(s) {
 	readConfigurationFile(atCommandFile);
-	Loger::setShowLevel(configuration.at("log").at("showLogLevel").get<unsigned int>());
+    Loger::setShowLevel(configuration.at("log").at("showLogLevel").get<unsigned int>());
 	Loger::setSaveLevel(configuration.at("log").at("saveLogLevel").get<unsigned int>());
 	ModemClient::setHost(configuration.at("server").at("host").get<std::string>());
 	ModemClient::setPort(configuration.at("server").at("port").get<std::string>());

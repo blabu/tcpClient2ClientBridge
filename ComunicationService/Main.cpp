@@ -9,7 +9,6 @@ int main() {
 	globalLog.setShowLevel(3);
 
 	boost::asio::io_service mainService;
-
 	CommunicationService MainApp(&mainService, "./config.json");
 	MainApp.run();
 	Loger::snapShotLong();

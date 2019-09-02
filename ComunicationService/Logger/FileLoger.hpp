@@ -31,7 +31,7 @@ public:
 	FileLoger() = delete;
     virtual ~FileLoger();
 	
-	void FileLoger::addLog(const std::string&& text);
+    void addLog(const std::string&& text);
     void flush();
     void flushLong();
 	void deleteAllLog();

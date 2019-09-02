@@ -1,7 +1,7 @@
 #ifndef SERIAL_CLIENT_H
 #define SERIAL_CLIENT_H
 
-#include <BaseClient.hpp>
+#include "BaseClient.hpp"
 
 class SerialClient : public BaseClient {
 	static unsigned int receiveDataTimeout;

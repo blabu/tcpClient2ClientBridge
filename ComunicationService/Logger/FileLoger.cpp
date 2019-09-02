@@ -44,7 +44,7 @@ void FileLoger::saveToDisk(const std::string &addr, std::vector<std::string>* li
 				file.close();
 			}
 			listData->clear();
-			delete listData; // Чистим память
+			delete listData; // Р§РёСЃС‚РёРј РїР°РјСЏС‚СЊ
 		}
 	}
 	catch (...) {

@@ -5,18 +5,18 @@
 #include <boost/signals2.hpp>
 
 /* 
-IBaseClient - Базовый интерфейс клиента в системе. 
-Определяет набор boost сигналов и методов (слотов) необходимых для работы программы
-И взаимодействия клиентов между собой
-Все клиенты приложения реализуют этот интерфейс.
+IBaseClient - Р‘Р°Р·РѕРІС‹Р№ РёРЅС‚РµСЂС„РµР№СЃ РєР»РёРµРЅС‚Р° РІ СЃРёСЃС‚РµРјРµ. 
+РћРїСЂРµРґРµР»СЏРµС‚ РЅР°Р±РѕСЂ boost СЃРёРіРЅР°Р»РѕРІ Рё РјРµС‚РѕРґРѕРІ (СЃР»РѕС‚РѕРІ) РЅРµРѕР±С…РѕРґРёРјС‹С… РґР»СЏ СЂР°Р±РѕС‚С‹ РїСЂРѕРіСЂР°РјРјС‹
+Р РІР·Р°РёРјРѕРґРµР№СЃС‚РІРёСЏ РєР»РёРµРЅС‚РѕРІ РјРµР¶РґСѓ СЃРѕР±РѕР№
+Р’СЃРµ РєР»РёРµРЅС‚С‹ РїСЂРёР»РѕР¶РµРЅРёСЏ СЂРµР°Р»РёР·СѓСЋС‚ СЌС‚РѕС‚ РёРЅС‚РµСЂС„РµР№СЃ.
 */
 class IBaseClient {
 public:
-	virtual void sendNewData(const message_ptr& msg) = 0;   // Слот который занимается отправкой данных полученных в процессе работы программы
+	virtual void sendNewData(const message_ptr& msg) = 0;   // РЎР»РѕС‚ РєРѕС‚РѕСЂС‹Р№ Р·Р°РЅРёРјР°РµС‚СЃСЏ РѕС‚РїСЂР°РІРєРѕР№ РґР°РЅРЅС‹С… РїРѕР»СѓС‡РµРЅРЅС‹С… РІ РїСЂРѕС†РµСЃСЃРµ СЂР°Р±РѕС‚С‹ РїСЂРѕРіСЂР°РјРјС‹
 	virtual void close() noexcept = 0;
 	virtual void open() = 0;
-	boost::signals2::signal<void(const message_ptr)> receiveNewData; // Сигнал об новых пришедших данных
-	boost::signals2::signal<void(void)> finishSession;				 // Сигнал о завершении сессии
+	boost::signals2::signal<void(const message_ptr)> receiveNewData; // РЎРёРіРЅР°Р» РѕР± РЅРѕРІС‹С… РїСЂРёС€РµРґС€РёС… РґР°РЅРЅС‹С…
+	boost::signals2::signal<void(void)> finishSession;				 // РЎРёРіРЅР°Р» Рѕ Р·Р°РІРµСЂС€РµРЅРёРё СЃРµСЃСЃРёРё
 	virtual ~IBaseClient() { receiveNewData.disconnect_all_slots(); finishSession.disconnect_all_slots(); }
 };
 

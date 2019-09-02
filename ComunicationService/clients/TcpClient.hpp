@@ -4,29 +4,29 @@
 #include "BaseClient.hpp"
 
 /*
-Простая DTO для объединения всех необходимых для работы TcpClient данных
+РџСЂРѕСЃС‚Р°СЏ DTO РґР»СЏ РѕР±СЉРµРґРёРЅРµРЅРёСЏ РІСЃРµС… РЅРµРѕР±С…РѕРґРёРјС‹С… РґР»СЏ СЂР°Р±РѕС‚С‹ TcpClient РґР°РЅРЅС‹С…
 */
 struct ConnectionProperties {
 	std::string Host;
 	std::string Port;
-	std::string connectionString; // Строка, которая будет отправлена серверу сразу после успешного конекта
+	std::string connectionString; // РЎС‚СЂРѕРєР°, РєРѕС‚РѕСЂР°СЏ Р±СѓРґРµС‚ РѕС‚РїСЂР°РІР»РµРЅР° СЃРµСЂРІРµСЂСѓ СЃСЂР°Р·Сѓ РїРѕСЃР»Рµ СѓСЃРїРµС€РЅРѕРіРѕ РєРѕРЅРµРєС‚Р°
 };
 
-//TcpClient - Реализует интерфейс базового клиента для TCP соединения
+//TcpClient - Р РµР°Р»РёР·СѓРµС‚ РёРЅС‚РµСЂС„РµР№СЃ Р±Р°Р·РѕРІРѕРіРѕ РєР»РёРµРЅС‚Р° РґР»СЏ TCP СЃРѕРµРґРёРЅРµРЅРёСЏ
 class TcpClient : public BaseClient {
 	static unsigned int receiveDataTimeout;
-	const ConnectionProperties connection; // Настройки соодинения (нужны для переподключения)
-	std::chrono::seconds connectionTimeout;// Таймоут соединения
+	const ConnectionProperties connection; // РќР°СЃС‚СЂРѕР№РєРё СЃРѕРѕРґРёРЅРµРЅРёСЏ (РЅСѓР¶РЅС‹ РґР»СЏ РїРµСЂРµРїРѕРґРєР»СЋС‡РµРЅРёСЏ)
+	std::chrono::seconds connectionTimeout;// РўР°Р№РјРѕСѓС‚ СЃРѕРµРґРёРЅРµРЅРёСЏ
 	std::chrono::seconds reConnectionTimeout;
 	boost::asio::ip::tcp::socket sock;
 	boost::asio::deadline_timer watchdog;
 	boost::asio::deadline_timer timer;
 	boost::asio::ip::tcp::resolver resolver;
 	 
-	void timeoutHandler(const boost::system::error_code& er); 	/*Обработчик таймоута (сессия закончена)*/
-	void connectionHandler(boost::system::error_code er, boost::asio::ip::tcp::endpoint p);
+	void timeoutHandler(const boost::system::error_code& er); 	/*РћР±СЂР°Р±РѕС‚С‡РёРє С‚Р°Р№РјРѕСѓС‚Р° (СЃРµСЃСЃРёСЏ Р·Р°РєРѕРЅС‡РµРЅР°)*/
+    void connectionHandler(const boost::system::error_code& er, boost::asio::ip::tcp::resolver::iterator p);
 	void connect();
-	void readHandler(boost::system::error_code er, std::size_t sz);
+    void readHandler(const boost::system::error_code& er, std::size_t sz);
 	void read();
 	void write();
 

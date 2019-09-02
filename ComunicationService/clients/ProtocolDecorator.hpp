@@ -3,6 +3,7 @@
 #include "TcpClient.hpp"
 #include "boost/bind.hpp"
 
+// Декоратор реализующий обрамление полезных данных дополнительной информацией
 class ProtocolDecorator : public IBaseClient {
 	static const std::string connectHeader;
 	static const char startPackage;
