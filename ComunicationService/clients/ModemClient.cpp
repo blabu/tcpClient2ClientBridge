@@ -1,6 +1,7 @@
 #include <boost/bind.hpp>
 #include <regex>
 #include "ModemClient.hpp"
+#include "NewProtocolDecorator.hpp"
 #include "../MainProjectLoger.hpp"
 
 std::map<std::string, std::string> ModemClient::vocabulary;
@@ -48,9 +49,11 @@ bool ModemClient::startCommandHandler(const std::string & command) {
 				globalLog.addLog(Loger::L_ERROR, "Error! Not find end of phone number");
 				return false;
 			}
+			globalLog.addLog(Loger::L_TRACE, "Try start session");
 			isStarted.store(true);
 			isFirstMessage.store(true);
-			clientDelegate = std::shared_ptr<IBaseClient>(new ProtocolDecorator(srv, host, port, device));
+			//clientDelegate = std::shared_ptr<IBaseClient>(new ProtocolDecorator(srv, host, port, device));
+			clientDelegate = std::shared_ptr<IBaseClient>(new NewProtocolDecorator(srv, host, port, device));
 			clientDelegate->open();
 			clientDelegate->receiveNewData.connect(boost::bind(&ModemClient::emmitNewDataFromDelegate, this, _1));
 			return true;

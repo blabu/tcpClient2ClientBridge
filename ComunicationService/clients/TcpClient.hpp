@@ -3,6 +3,7 @@
 
 #include "BaseClient.hpp"
 
+
 /*
 Простая DTO для объединения всех необходимых для работы TcpClient данных
 */
@@ -34,9 +35,7 @@ class TcpClient : public BaseClient {
 	TcpClient(TcpClient&) = delete;
 public:
 	TcpClient(boost::asio::io_service *const srv, const ConnectionProperties& c);
-	void open() {
-		connect();
-	}
+	void open();
 	void close() noexcept {
 		if (sock.is_open()) { boost::system::error_code er; sock.cancel(er); sock.close(er); }
 	}

@@ -40,6 +40,7 @@ public:
     void addLog(std::uint8_t logLevel, const std::string &&str);
     void addLog(std::uint8_t logLevel, const std::string &str1, const std::string &str2);
     void addLog(std::uint8_t logLevel, const std::string &str1, const std::string &str2, const std::string &str3);
+	void addLog(uint8_t logLevel, const std::string& str1, const std::string& str2, const std::string& str3, const std::string& str4);
     void addLog(std::uint8_t logLevel, const char *ch);
 
 	std::string getStatus()const;

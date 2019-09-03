@@ -164,6 +164,14 @@ void Loger::addLog(uint8_t logLevel, const std::string& str1, const std::string&
 	addLog(logLevel, std::move(logStr));
 }
 
+void Loger::addLog(uint8_t logLevel, const std::string& str1, const std::string& str2, const std::string& str3, const std::string& str4) {
+	if (logLevel >= EMPTY) return;
+	if ((logLevel > saveLevel) &&
+		(logLevel > showLevel)) return; // Нечего здесь делать
+	std::string logStr(str1 + str2 + str3 + str4);
+	addLog(logLevel, std::move(logStr));
+}
+
 void Loger::addLog(uint8_t logLevel, const char *ch){
     std::string str_mess(ch);
     return addLog(logLevel, std::move(str_mess));

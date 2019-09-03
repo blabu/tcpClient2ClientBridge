@@ -109,7 +109,12 @@ TcpClient::TcpClient(boost::asio::io_service * const srv, const ConnectionProper
 	watchdog(*service),
 	timer(*service),
 	resolver(*service) {
+	globalLog.addLog(Loger::L_TRACE, "Init TCP client");
+}
+
+void TcpClient::open() {
 	globalLog.addLog(Loger::L_INFO, "Try open connection");
+	connect();
 }
 
 TcpClient::~TcpClient() {

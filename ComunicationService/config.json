@@ -6,7 +6,7 @@
 
 "server" : {
 	"host":"127.0.0.1",
-	"port": "3555",
+	"port": "5333",
 	"timeout" : 100
 },
 
@@ -16,6 +16,7 @@
 	"AT+CREG=?\r\n" : "CREG: 0,1",
 	"ATE0\r\n" : "OK",
 	"AT+CSQ=?\r\n" : "CSQ: 32,1,0",
+	"AT+CREG?" : "+CREG: 0,1\r\nOK"
 	"Hello" : "Hi",
 	"How are you?": "I am fine thanks",
 	"{start}" : "^[Aa][Tt][Dd](#|\\+)?[0-9]+[#\\r\\n]+",
@@ -28,7 +29,7 @@
 },
 
 "user" : {
-	"name" : "vasya",
-	"pass" : "123456"
+	"name" : "blabu",
+	"pass" : "12345"
 }
 }
