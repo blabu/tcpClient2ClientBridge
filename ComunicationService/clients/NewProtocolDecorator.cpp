@@ -48,13 +48,15 @@ std::string NewProtocolDecorator::formMessage(const std::string& to, messageType
 
 //check INIT OK answer initOkMessage
 void NewProtocolDecorator::initHandler(const message_ptr m){
-	auto resultMessage = m->toString();
-	auto waitMessage = (boost::format(initOkMessage) % localName).str();
+	globalLog.addLog(Loger::L_TRACE, "In init handler");
+	std::string resultMessage(m->toString());
+	std::string waitMessage((boost::format(initOkMessage) % localName).str());
 	globalLog.addLog(Loger::L_TRACE, "Try compare receive message ", resultMessage, " and wait message ", waitMessage);
 	if (resultMessage == waitMessage) { // Подключение и инициализация удалась
-		globalLog.addLog(Loger::L_TRACE, "Message is equal init OK");
+		clientDelegate->receiveNewData.disconnect_all_slots();
 		clientDelegate->receiveNewData.connect(boost::bind(&NewProtocolDecorator::connectToDeviceHandler, this, _1));
-		clientDelegate->sendNewData(message_ptr(new message(formMessage(connectTo, messageTypes::connectCMD, ""))));  
+		clientDelegate->sendNewData(message_ptr(new message(formMessage(connectTo, messageTypes::connectCMD, ""))));
+		globalLog.addLog(Loger::L_INFO, "Init OK");
 	}
 	else {
 		globalLog.addLog(Loger::L_WARNING, "Message not equal");
@@ -64,12 +66,15 @@ void NewProtocolDecorator::initHandler(const message_ptr m){
 }
 
 void NewProtocolDecorator::connectToDeviceHandler(const message_ptr m) {
-	auto resultMessage = m->toString();
-	auto waitMessage = (boost::format(connectOkMessage) %connectTo %localName).str();
+	globalLog.addLog(Loger::L_TRACE, "In connect handler");
+	std::string resultMessage(m->toString());
+	std::string waitMessage ((boost::format(connectOkMessage)%connectTo%localName).str());
 	globalLog.addLog(Loger::L_TRACE, "Try compare receive message ", resultMessage, " and wait message ", waitMessage);
 	if (resultMessage == waitMessage) { // Подключение к клиенту удалось
 		isConnected = true;
+		clientDelegate->receiveNewData.disconnect_all_slots();
 		clientDelegate->receiveNewData.connect(boost::bind(&NewProtocolDecorator::emmitNewDataSlot, this, _1));
+		globalLog.addLog(Loger::L_INFO, "Connect OK");
 		if (savedMsg != nullptr && savedMsg.get() != nullptr) {
 			sendNewData(savedMsg);
 		}
@@ -96,7 +101,6 @@ void NewProtocolDecorator::emmitNewDataSlot(const message_ptr m) { // Принял дан
 	}
 	if (parsedParam[2] != localName) {
 		globalLog.addLog(Loger::L_ERROR, "Error localName ", localName, " not equal ", parsedParam[2]);
-		return;
 	}
 	auto messageType = std::stoi(parsedParam[3], 0, 16);
 	if (messageType != messageTypes::dataCMD) {
@@ -157,6 +161,7 @@ void NewProtocolDecorator::close() noexcept {
 void NewProtocolDecorator::open() {
 	if (clientDelegate != nullptr && clientDelegate.get() != nullptr) {
 		globalLog.addLog(Loger::L_TRACE, "Try open connection to the server ", host, ":", port);
+		clientDelegate->receiveNewData.disconnect_all_slots();
 		clientDelegate->receiveNewData.connect(boost::bind(&NewProtocolDecorator::initHandler, this, _1)); // Прием сообщения
 		clientDelegate->open();
 	}
