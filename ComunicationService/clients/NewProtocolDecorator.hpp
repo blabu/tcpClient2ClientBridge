@@ -15,6 +15,11 @@ class NewProtocolDecorator : public IBaseClient
 	static const std::string headerTemplate;
 	static const std::string initOkMessage;
 	static const std::string connectOkMessage;
+	const std::string answerOK;
+	const std::string answerError;
+	static std::string base64_encode(std::uint8_t const* data, std::size_t len);
+	static std::string base64_encode(std::string const& s);
+
 	std::string localName;
 	std::string localPass;
 	std::shared_ptr<TcpClient> clientDelegate;
@@ -31,7 +36,8 @@ class NewProtocolDecorator : public IBaseClient
 	bool isConnected;
 	message_ptr savedMsg; // Одно сохраненное сообщение
 public:
-	NewProtocolDecorator(boost::asio::io_service *const srv, const std::string& host, const std::string& port, const std::string& deviceID);
+	NewProtocolDecorator(boost::asio::io_service *const srv, const std::string& host, const std::string& port, 
+						const std::string& deviceID, const std::string& answerIfOK, const std::string& answerIfError);
 	virtual ~NewProtocolDecorator() = default;
 	void sendNewData(const message_ptr& msg);
 	void close() noexcept;

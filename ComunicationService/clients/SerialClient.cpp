@@ -66,10 +66,65 @@ void SerialClient::open() {
 	boost::system::error_code er;
 	sp.open(deviceName, er);
 	if (!er) {
-		sp.set_option(boost::asio::serial_port_base::baud_rate(921600));
+		if(speed != 0) sp.set_option(boost::asio::serial_port_base::baud_rate(speed));
+		else sp.set_option(boost::asio::serial_port_base::baud_rate(921600));
+		if(bitSize != 0) sp.set_option(boost::asio::serial_port_base::character_size(bitSize));
+		switch(stopBits) {
+		case 1:	sp.set_option(boost::asio::serial_port_base::stop_bits(boost::asio::serial_port_base::stop_bits::one));
+			break;
+		case 2:	sp.set_option(boost::asio::serial_port_base::stop_bits(boost::asio::serial_port_base::stop_bits::onepointfive));
+			break;
+		case 3: sp.set_option(boost::asio::serial_port_base::stop_bits(boost::asio::serial_port_base::stop_bits::two));
+			break;
+		}
+		switch (flowControl) {
+		case 1:  sp.set_option(boost::asio::serial_port::flow_control(boost::asio::serial_port::flow_control::none));
+			break;
+		case 2:
+			sp.set_option(boost::asio::serial_port::flow_control(boost::asio::serial_port::flow_control::software));
+			break;
+		case 3:
+			sp.set_option(boost::asio::serial_port::flow_control(boost::asio::serial_port::flow_control::hardware));
+			break;
+		}
 		read();
 	}
 	else {
 		globalLog.addLog(Loger::L_ERROR, "Error when try open COM port ", std::string(deviceName));
 	}
+}
+
+void SerialClient::setProperrties(const std::string & speed, const std::string & bitSize, const std::string & flowControl, const std::string & stop) {
+	try {
+		this->speed = std::stoi(speed);
+	}
+	catch (const std::invalid_argument&) {
+		globalLog.addLog(Loger::L_WARNING, "Invalid argument for speed detection");
+	}
+	if (this->speed != 1200 ||
+		this->speed != 2400 ||
+		this->speed != 4800 ||
+		this->speed != 9600 ||
+		this->speed != 19200 ||
+		this->speed != 38400 ||
+		this->speed != 57600 ||
+		this->speed != 115200 ||
+		this->speed != 230400 ||
+		this->speed != 460800 ||
+		this->speed != 921600) this->speed = 921600;
+	try {	
+		this->bitSize = std::stoi(bitSize);
+	}
+	catch (const std::invalid_argument&) {
+		globalLog.addLog(Loger::L_WARNING, "Invalid argument for bitSize detection");
+	}
+	if(this->bitSize > 8 || !this->bitSize) this->bitSize = 8;
+	
+	if (flowControl == "none") this->flowControl = 1;
+	else if (flowControl == "soft") this->flowControl = 2;
+	else if (flowControl == "hard") this->flowControl = 3;
+
+	if (stop == "1") stopBits = 1;
+	else if (stop == "1.5") stopBits = 2;
+	else if(stop == "2") stopBits = 3;
 }

@@ -19,6 +19,9 @@ class ModemClient : public IBaseClient {
 	static std::map<std::string, std::string> vocabulary;
 	static std::string host;
 	static std::string port;
+	static std::string connectOk;
+	static std::string connectFail;
+
 
 	boost::asio::io_service* const srv;
 	std::atomic<bool> isStarted;
@@ -33,9 +36,9 @@ class ModemClient : public IBaseClient {
 		receiveNewData(m);
 	}
 
-	bool stopCommandHandler(const std::string& command);
+	void stopCommandHandler();
 
-	bool startCommandHandler(const std::string& command);
+	std::string startCommandHandler(const std::string& command);
 
 	std::string write(const std::string& command, const std::string& defaultAnswer = "OK\r\n");
 
@@ -56,5 +59,8 @@ public:
 	static void appendNewCommand(const std::string& command, const std::string& answer) {
 		vocabulary.insert(std::pair<std::string, std::string>(command, answer));
 	}
+
+	static void setConnectOKAnswer(const std::string& answer) { connectOk = answer; }
+	static void setConnectFailAnswer(const std::string& answer) { connectFail = answer; }
 };
 #endif //MODEM_CLIENT_H

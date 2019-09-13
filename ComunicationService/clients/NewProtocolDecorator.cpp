@@ -11,12 +11,30 @@
 #include <cstdlib>
 #include <chrono>
 
+std::string NewProtocolDecorator::base64_encode(std::uint8_t const* data, std::size_t len) {
+	std::string dest;
+	dest.resize(boost::beast::detail::base64::encoded_size(len));
+	dest.resize(boost::beast::detail::base64::encode(&dest[0], data, len));
+	return dest;
+}
+
+std::string NewProtocolDecorator::base64_encode(std::string const& s) {
+	return base64_encode(reinterpret_cast<std::uint8_t const*>(s.data()), s.size());
+}
+
 const std::string NewProtocolDecorator::headerEnd("###");
 const std::string NewProtocolDecorator::headerTemplate("$V1;%s;%s;%x;%x###%s"); // localName, toName, messageType, messageSize, message
 const std::string NewProtocolDecorator::initOkMessage("$V1;0;%s;6;7###INIT OK"); // local name
 const std::string NewProtocolDecorator::connectOkMessage("$V1;%s;%s;8;a###CONNECT OK"); // to name, local name
 
-NewProtocolDecorator::NewProtocolDecorator(boost::asio::io_service *const srv, const std::string& host, const std::string& port, const std::string& deviceID) : srv(srv), host(host), port(port), connectTo(deviceID) {
+NewProtocolDecorator::NewProtocolDecorator(boost::asio::io_service *const srv, const std::string& host, const std::string& port, 
+										   const std::string& deviceID, const std::string& answerIfOK, const std::string& answerIfError) : 
+	answerOK(answerIfOK),
+	answerError(answerIfError),
+	srv(srv), 
+	host(host), 
+	port(port), 
+	connectTo(deviceID) {
 	auto conf = Configuration::getConfiguration("");
 	localName = conf->getConfigString("user:name");
 	localPass = localName + conf->getConfigString("user:pass");
@@ -24,22 +42,23 @@ NewProtocolDecorator::NewProtocolDecorator(boost::asio::io_service *const srv, c
 	isConnected = false;
 	std::vector<unsigned char> hashBin(picosha2::k_digest_size);
 	picosha2::hash256(localPass.cbegin(), localPass.cend(), hashBin.begin(), hashBin.end());
-	localPass = boost::beast::detail::base64_encode(hashBin.data(), hashBin.size());
+	localPass = base64_encode(hashBin.data(), hashBin.size());
 	std::string salt(randomString(16));
 	globalLog.addLog(Loger::L_DEBUG, "Random salt is ", salt);
 	auto signature = localName + salt + localPass;
 	picosha2::hash256(signature.cbegin(), signature.cend(), hashBin.begin(), hashBin.end());
-	signature = salt + ";" + boost::beast::detail::base64_encode(hashBin.data(), hashBin.size());
+	signature = salt + ";" + base64_encode(hashBin.data(), hashBin.size());
 	globalLog.addLog(Loger::L_DEBUG, "Signature is ", signature);
 	ConnectionProperties c;
 	c.connectionString = formMessage("0", messageTypes::initCMD, signature);
 	c.Host = host; c.Port = port;
-	globalLog.addLog(Loger::L_INFO, "Form connection string ", c.connectionString);
+	globalLog.addLog(Loger::L_INFO, "Form init string ", c.connectionString);
 	clientDelegate = std::shared_ptr<TcpClient>(new TcpClient(srv, c));
+	clientDelegate->finishSession.connect([this]() { this->receiveNewData(message_ptr(new message(this->answerError))); this->finishSession(); });
 }
 
 std::string NewProtocolDecorator::formMessage(const std::string& to, messageTypes t, std::size_t sz, const std::uint8_t* data) const {
-	return formMessage(to, t, boost::beast::detail::base64_encode(data, sz));
+	return formMessage(to, t, base64_encode(data,sz));
 }
 
 std::string NewProtocolDecorator::formMessage(const std::string& to, messageTypes t, const std::string& data) const {
@@ -53,6 +72,7 @@ void NewProtocolDecorator::initHandler(const message_ptr m){
 	std::string waitMessage((boost::format(initOkMessage) % localName).str());
 	globalLog.addLog(Loger::L_TRACE, "Try compare receive message ", resultMessage, " and wait message ", waitMessage);
 	if (resultMessage == waitMessage) { // Подключение и инициализация удалась
+		globalLog.addLog(Loger::L_TRACE, "Try connect to ", connectTo);
 		clientDelegate->receiveNewData.disconnect_all_slots();
 		clientDelegate->receiveNewData.connect(boost::bind(&NewProtocolDecorator::connectToDeviceHandler, this, _1));
 		clientDelegate->sendNewData(message_ptr(new message(formMessage(connectTo, messageTypes::connectCMD, ""))));
@@ -75,12 +95,14 @@ void NewProtocolDecorator::connectToDeviceHandler(const message_ptr m) {
 		clientDelegate->receiveNewData.disconnect_all_slots();
 		clientDelegate->receiveNewData.connect(boost::bind(&NewProtocolDecorator::emmitNewDataSlot, this, _1));
 		globalLog.addLog(Loger::L_INFO, "Connect OK");
+		receiveNewData(message_ptr(new message(answerOK)));
 		if (savedMsg != nullptr && savedMsg.get() != nullptr) {
 			sendNewData(savedMsg);
 		}
 	}
 	else {
 		globalLog.addLog(Loger::L_ERROR, "Connection can not be establish ", resultMessage);
+		receiveNewData(message_ptr(new message(answerError)));
 	}
 }
 
@@ -135,7 +157,7 @@ std::string NewProtocolDecorator::randomString(std::size_t size) {
 void NewProtocolDecorator::sendNewData(const message_ptr & msg) {
 	if (clientDelegate != nullptr && clientDelegate.get() != nullptr) {
 		if (isConnected) {
-			clientDelegate->sendNewData(message_ptr(new message(formMessage(connectTo, messageTypes::dataCMD, msg->size(), msg->data()))));
+			clientDelegate->sendNewData(message_ptr(new message(formMessage(connectTo, messageTypes::dataCMD, msg->currentSize(), msg->data()))));
 		}
 		else {
 			if (savedMsg != nullptr && savedMsg.get() != nullptr) {

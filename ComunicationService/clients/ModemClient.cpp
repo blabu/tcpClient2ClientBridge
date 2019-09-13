@@ -7,8 +7,10 @@
 std::map<std::string, std::string> ModemClient::vocabulary;
 std::string ModemClient::host;
 std::string ModemClient::port;
+std::string ModemClient::connectOk("CONNECT OK");
+std::string ModemClient::connectFail("NO CARRIER");
 
-bool ModemClient::stopCommandHandler(const std::string & command) {
+void ModemClient::stopCommandHandler() {
 	isStarted.store(false);
 	if (clientDelegate != nullptr && clientDelegate.get() != nullptr) {
 		clientDelegate->receiveNewData.disconnect_all_slots();
@@ -18,13 +20,12 @@ bool ModemClient::stopCommandHandler(const std::string & command) {
 		srv->post([this]() {if (this->clientDelegate != nullptr) this->clientDelegate.reset(); });
 	}
 	finishSession();
-	return true;
 }
 
-bool ModemClient::startCommandHandler(const std::string & command) {
+std::string ModemClient::startCommandHandler(const std::string & command) {
 	globalLog.addLog(Loger::L_TRACE, "Finded command is start");
 	if (!isStarted.load()) {
-		auto identifier = command.find('+');// TODO Подключаемся
+		auto identifier = command.find('+');
 		if (identifier == std::string::npos) { // Не нашли
 			globalLog.addLog(Loger::L_TRACE, "Not find start device number (symb #) in command ", command, ". Try find + ");
 			identifier = command.find('#');
@@ -47,38 +48,39 @@ bool ModemClient::startCommandHandler(const std::string & command) {
 			}
 			catch (std::out_of_range) {
 				globalLog.addLog(Loger::L_ERROR, "Error! Not find end of phone number");
-				return false;
+				return connectFail;
 			}
 			globalLog.addLog(Loger::L_TRACE, "Try start session");
 			isStarted.store(true);
 			isFirstMessage.store(true);
 			//clientDelegate = std::shared_ptr<IBaseClient>(new ProtocolDecorator(srv, host, port, device));
-			clientDelegate = std::shared_ptr<IBaseClient>(new NewProtocolDecorator(srv, host, port, device));
+			clientDelegate = std::shared_ptr<IBaseClient>(new NewProtocolDecorator(srv, host, port, device, connectOk, connectFail)); // декоратор сам ответ усешно соединение или нет
 			clientDelegate->open();
 			clientDelegate->receiveNewData.connect(boost::bind(&ModemClient::emmitNewDataFromDelegate, this, _1));
-			return true;
+			clientDelegate->finishSession.connect(boost::bind(&ModemClient::stopCommandHandler, this));
+			return std::string();
 		}
-		return false;
+		return connectFail;
 	}
-	return false;
+	return connectFail;
 }
 
 std::string ModemClient::write(const std::string & command, const std::string & defaultAnswer) {
 	globalLog.addLog(Loger::L_INFO, "Modem receive command ", command);
 	try {
 		auto answer(vocabulary.at(command)); // Ищем ответ по словарю
-		auto startPos = command.find('{');	 // Если в ответе присутствуют фигурные скобки, значит это не ответ а команда к действию
-		auto stopPos = command.find('}'); // 
+		auto startPos = answer.find('{');	 // Если в ответе присутствуют фигурные скобки, значит это не ответ а команда к действию
+		auto stopPos = answer.find('}'); // 
 		if (startPos != std::string::npos && stopPos != std::string::npos && startPos < stopPos) { // Значит это команда на исполнение, а не готовый ответ
-			if (command.find("start") != std::string::npos) { // {start}
+			auto p = answer.find("start");
+			if (p!=std::string::npos && p>startPos && p<stopPos) { // {start}
 				globalLog.addLog(Loger::L_INFO, "Finded start command");
-				if (startCommandHandler(command)) return defaultAnswer;
-				else return std::string();
+				return startCommandHandler(command);
 			}
-			else if (command.find("stop") != std::string::npos) {
+			else if (answer.find("stop") != std::string::npos) {
 				globalLog.addLog(Loger::L_INFO, "Finded stop command");
-				if (stopCommandHandler(command)) return defaultAnswer;
-				else return std::string();
+				stopCommandHandler();
+				return defaultAnswer;
 			}
 			// Undefined command
 			globalLog.addLog(Loger::L_WARNING, "Undefined answer " + answer, " for command: " + command, ", so modem form empty string answer");
@@ -102,16 +104,15 @@ std::string ModemClient::write(const std::string & command, const std::string & 
 				const std::regex regularExpressionStart(vocabulary.at("{start}"));
 				if (std::regex_match(command, regularExpressionStart)) { // Найдено совпадение (достаем номер устройства для связи)
 					globalLog.addLog(Loger::L_TRACE, "Regular expresion finded ");
-					if (startCommandHandler(command)) return defaultAnswer;
-					else return std::string();
+					return startCommandHandler(command);
 				}
 			}
 			globalLog.addLog(Loger::L_TRACE, "Try find regular expresion for command ", command + " ", vocabulary.at("{stop}"));
 			const std::regex regularExpressionStart(vocabulary.at("{stop}"));
 			if (std::regex_match(command, regularExpressionStart)) { // Найдено совпадение (достаем номер устройства для связи)
 				globalLog.addLog(Loger::L_TRACE, "Regular expresion finded ");
-				if (stopCommandHandler(command)) return defaultAnswer;
-				else return std::string();
+				stopCommandHandler();
+				return defaultAnswer;
 			}
 		}
 		catch (std::out_of_range) { // Не определены такие команды как {start} и {stop}
@@ -127,8 +128,8 @@ std::string ModemClient::write(const std::string & command, const std::string & 
 }
 
 void ModemClient::sendNewData(const message_ptr & msg) {   // Пришли новые данные с последовательного порта
-	auto answer = write(msg->toString()); // Проверяем команда ли это?
-	if (!isStarted.load()) { // Если модуль не запущен
+	std::string answer(write(msg->toString())); // Проверяем команда ли это?
+	if (!isStarted.load()) { // Если модуль не запущен, значит просто формируем ответ как он есть
 		globalLog.addLog(Loger::L_TRACE, "TCP client is stoped and form answer to serial: ", answer);
 		receiveNewData(message_ptr(new message(answer))); // Формируем ответ сгенерированный имитатором модема
 	}
@@ -142,7 +143,6 @@ void ModemClient::sendNewData(const message_ptr & msg) {   // Пришли но�
 		}
 	}
 	else {
-		emmitNewDataFromDelegate(message_ptr(new message(answer)));
 		isFirstMessage.store(false);
 	}
 }

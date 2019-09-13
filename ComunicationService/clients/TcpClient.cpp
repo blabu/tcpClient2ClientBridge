@@ -72,6 +72,7 @@ void TcpClient::readHandler(const boost::system::error_code& er, std::size_t sz)
 	else { // Ошибка чтения приведет к завершению операции чтения
 		if (sock.is_open()) { boost::system::error_code er; sock.close(er); } // TODO Возможно ошибка чтения приводит к завершению соединения
 		globalLog.addLog(Loger::L_ERROR, "Error when try read from remote connection");
+		finishSession();
 		globalLog.addLog(Loger::L_ERROR, er.message().c_str());
 	}
 }
