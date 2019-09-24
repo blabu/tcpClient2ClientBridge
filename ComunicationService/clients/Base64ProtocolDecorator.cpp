@@ -1,4 +1,4 @@
-#include "NewProtocolDecorator.hpp"
+#include "Base64ProtocolDecorator.hpp"
 #include "../MainProjectLoger.hpp"
 #include "../Configuration.hpp"
 #include "../picosha2.h"
@@ -11,23 +11,25 @@
 #include <cstdlib>
 #include <chrono>
 
-std::string NewProtocolDecorator::base64_encode(std::uint8_t const* data, std::size_t len) {
+std::string Base64ProtocolDecorator::base64_encode(std::uint8_t const* data, std::size_t len) {
 	std::string dest;
 	dest.resize(boost::beast::detail::base64::encoded_size(len));
 	dest.resize(boost::beast::detail::base64::encode(&dest[0], data, len));
 	return dest;
 }
 
-std::string NewProtocolDecorator::base64_encode(std::string const& s) {
+std::string Base64ProtocolDecorator::base64_encode(std::string const& s) {
 	return base64_encode(reinterpret_cast<std::uint8_t const*>(s.data()), s.size());
 }
 
-const std::string NewProtocolDecorator::headerEnd("###");
-const std::string NewProtocolDecorator::headerTemplate("$V1;%s;%s;%x;%x###%s"); // localName, toName, messageType, messageSize, message
-const std::string NewProtocolDecorator::initOkMessage("$V1;0;%s;6;7###INIT OK"); // local name
-const std::string NewProtocolDecorator::connectOkMessage("$V1;%s;%s;8;a###CONNECT OK"); // to name, local name
+const std::string Base64ProtocolDecorator::headerEnd("###");
+const std::string Base64ProtocolDecorator::headerTemplateBinary("$V1;%s;%s;%x;%x###%s"); // localName, toName, messageType, messageSize, message
+const std::string Base64ProtocolDecorator::headerTemplate("$V1;%s;%s;%x;%x###%s"); // localName, toName, messageType, messageSize, message
+const std::string Base64ProtocolDecorator::initOkMessage("$V1;0;%s;6;7###INIT OK"); // local name
+const std::string Base64ProtocolDecorator::connectOkMessage("$V1;%s;%s;8;a###CONNECT OK"); // to name, local name
+bool Base64ProtocolDecorator::base64OutputEnabled = true;
 
-NewProtocolDecorator::NewProtocolDecorator(boost::asio::io_service *const srv, const std::string& host, const std::string& port, 
+Base64ProtocolDecorator::Base64ProtocolDecorator(boost::asio::io_service *const srv, const std::string& host, const std::string& port, 
 										   const std::string& deviceID, const std::string& answerIfOK, const std::string& answerIfError) : 
 	answerOK(answerIfOK),
 	answerError(answerIfError),
@@ -57,16 +59,23 @@ NewProtocolDecorator::NewProtocolDecorator(boost::asio::io_service *const srv, c
 	clientDelegate->finishSession.connect([this]() { this->receiveNewData(message_ptr(new message(this->answerError))); this->finishSession(); });
 }
 
-std::string NewProtocolDecorator::formMessage(const std::string& to, messageTypes t, std::size_t sz, const std::uint8_t* data) const {
-	return formMessage(to, t, base64_encode(data,sz));
+std::vector<std::uint8_t> Base64ProtocolDecorator::formMessage(const std::string& to, messageTypes t, std::size_t sz, const std::uint8_t* data) const {
+	if (base64OutputEnabled) { // Если Base64 включен, то работаем со строками
+		auto res = formMessage(to, t, base64_encode(data, sz));
+		return std::vector<std::uint8_t>(res.cbegin(), res.cend());
+	}
+	auto header = (boost::format(headerTemplateBinary)%localName%to%t%sz).str();
+	std::vector<std::uint8_t> res(header.cbegin(), header.cend());
+	for (std::size_t i = 0; i < sz; i++) res.push_back(data[i]);
+	return res;
 }
 
-std::string NewProtocolDecorator::formMessage(const std::string& to, messageTypes t, const std::string& data) const {
+std::string Base64ProtocolDecorator::formMessage(const std::string& to, messageTypes t, const std::string& data) const {
 	return (boost::format(headerTemplate)%localName%to%t%data.size()%data).str();
 }
 
 //check INIT OK answer initOkMessage
-void NewProtocolDecorator::initHandler(const message_ptr m){
+void Base64ProtocolDecorator::initHandler(const message_ptr m){
 	globalLog.addLog(Loger::L_TRACE, "In init handler");
 	std::string resultMessage(m->toString());
 	std::string waitMessage((boost::format(initOkMessage) % localName).str());
@@ -74,7 +83,7 @@ void NewProtocolDecorator::initHandler(const message_ptr m){
 	if (resultMessage == waitMessage) { // Подключение и инициализация удалась
 		globalLog.addLog(Loger::L_TRACE, "Try connect to ", connectTo);
 		clientDelegate->receiveNewData.disconnect_all_slots();
-		clientDelegate->receiveNewData.connect(boost::bind(&NewProtocolDecorator::connectToDeviceHandler, this, _1));
+		clientDelegate->receiveNewData.connect(boost::bind(&Base64ProtocolDecorator::connectToDeviceHandler, this, _1));
 		clientDelegate->sendNewData(message_ptr(new message(formMessage(connectTo, messageTypes::connectCMD, ""))));
 		globalLog.addLog(Loger::L_INFO, "Init OK");
 	}
@@ -85,7 +94,7 @@ void NewProtocolDecorator::initHandler(const message_ptr m){
 	}
 }
 
-void NewProtocolDecorator::connectToDeviceHandler(const message_ptr m) {
+void Base64ProtocolDecorator::connectToDeviceHandler(const message_ptr m) {
 	globalLog.addLog(Loger::L_TRACE, "In connect handler");
 	std::string resultMessage(m->toString());
 	std::string waitMessage ((boost::format(connectOkMessage)%connectTo%localName).str());
@@ -93,7 +102,7 @@ void NewProtocolDecorator::connectToDeviceHandler(const message_ptr m) {
 	if (resultMessage == waitMessage) { // Подключение к клиенту удалось
 		isConnected = true;
 		clientDelegate->receiveNewData.disconnect_all_slots();
-		clientDelegate->receiveNewData.connect(boost::bind(&NewProtocolDecorator::emmitNewDataSlot, this, _1));
+		clientDelegate->receiveNewData.connect(boost::bind(&Base64ProtocolDecorator::emmitNewDataSlot, this, _1));
 		globalLog.addLog(Loger::L_INFO, "Connect OK");
 		receiveNewData(message_ptr(new message(answerOK)));
 		if (savedMsg != nullptr && savedMsg.get() != nullptr) {
@@ -106,7 +115,7 @@ void NewProtocolDecorator::connectToDeviceHandler(const message_ptr m) {
 	}
 }
 
-void NewProtocolDecorator::emmitNewDataSlot(const message_ptr m) { // Принял данные от clientDelegate передаю их дальше из сети в COM порт
+void Base64ProtocolDecorator::emmitNewDataSlot(const message_ptr m) { // Принял данные от clientDelegate передаю их дальше из сети в COM порт
 	globalLog.addLog(Loger::L_INFO, "Receive new messages ", m->toString(), ". And try decode it");
 	auto mess(m->toString());
 	auto headerSize = mess.find_first_of(headerEnd);
@@ -143,7 +152,7 @@ void NewProtocolDecorator::emmitNewDataSlot(const message_ptr m) { // Принял дан
 	receiveNewData(message_ptr(new message(decodedSize, dat.get())));
 }
 
-std::string NewProtocolDecorator::randomString(std::size_t size) {
+std::string Base64ProtocolDecorator::randomString(std::size_t size) {
 	static const char alfabet[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 	std::srand(static_cast<unsigned int>(std::chrono::system_clock::now().time_since_epoch().count()));
 	std::string res;
@@ -154,7 +163,7 @@ std::string NewProtocolDecorator::randomString(std::size_t size) {
 	return res;
 }
 
-void NewProtocolDecorator::sendNewData(const message_ptr & msg) {
+void Base64ProtocolDecorator::sendNewData(const message_ptr & msg) {
 	if (clientDelegate != nullptr && clientDelegate.get() != nullptr) {
 		if (isConnected) {
 			clientDelegate->sendNewData(message_ptr(new message(formMessage(connectTo, messageTypes::dataCMD, msg->currentSize(), msg->data()))));
@@ -164,7 +173,7 @@ void NewProtocolDecorator::sendNewData(const message_ptr & msg) {
 				globalLog.addLog(Loger::L_ERROR, "Error try send new message ", msg->toString(), " but already have saved message ", savedMsg->toString());
 			}
 			else {
-				globalLog.addLog(Loger::L_WARNING, "Try send message ", msg->toString(), " but not connected yet");
+				globalLog.addLog(Loger::L_WARNING, "Try send message ", msg->toString(), " but not connected yet. Save it");
 			}
 			savedMsg = msg;
 		}
@@ -174,17 +183,17 @@ void NewProtocolDecorator::sendNewData(const message_ptr & msg) {
 	}
 }
 
-void NewProtocolDecorator::close() noexcept {
+void Base64ProtocolDecorator::close() noexcept {
 	if (clientDelegate != nullptr && clientDelegate.get() != nullptr) {
 		clientDelegate->close();
 	}
 }
 
-void NewProtocolDecorator::open() {
+void Base64ProtocolDecorator::open() {
 	if (clientDelegate != nullptr && clientDelegate.get() != nullptr) {
 		globalLog.addLog(Loger::L_TRACE, "Try open connection to the server ", host, ":", port);
 		clientDelegate->receiveNewData.disconnect_all_slots();
-		clientDelegate->receiveNewData.connect(boost::bind(&NewProtocolDecorator::initHandler, this, _1)); // Прием сообщения
+		clientDelegate->receiveNewData.connect(boost::bind(&Base64ProtocolDecorator::initHandler, this, _1)); // Прием сообщения
 		clientDelegate->open();
 	}
 	else {

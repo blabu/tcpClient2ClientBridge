@@ -4,6 +4,7 @@
 #include <string>
 #include <cstring> // for memcpy
 #include <memory>
+#include <vector>
 
 class message {
 	const std::size_t sz;
@@ -20,6 +21,9 @@ public:
 	}
 	message(const std::size_t size, std::uint8_t* const data) : sz(size+(size>>1)), current(size), dat(new std::uint8_t[sz]) {
         memcpy((void*)dat, (const void*)data, size);
+	}
+	message(const std::vector<std::uint8_t>& data) : sz(data.size()), current(data.size()), dat(new std::uint8_t[sz]) {
+		memcpy((void*)dat, (const void*)data.data(), current);
 	}
 	~message() { if (dat != nullptr) delete[] dat; }
 	std::uint8_t *const data() const { return dat; }

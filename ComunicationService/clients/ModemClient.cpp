@@ -1,7 +1,7 @@
 #include <boost/bind.hpp>
 #include <regex>
 #include "ModemClient.hpp"
-#include "NewProtocolDecorator.hpp"
+#include "Base64ProtocolDecorator.hpp"
 #include "../MainProjectLoger.hpp"
 
 std::map<std::string, std::string> ModemClient::vocabulary;
@@ -54,7 +54,7 @@ std::string ModemClient::startCommandHandler(const std::string & command) {
 			isStarted.store(true);
 			isFirstMessage.store(true);
 			//clientDelegate = std::shared_ptr<IBaseClient>(new ProtocolDecorator(srv, host, port, device));
-			clientDelegate = std::shared_ptr<IBaseClient>(new NewProtocolDecorator(srv, host, port, device, connectOk, connectFail)); // декоратор сам ответ усешно соединение или нет
+			clientDelegate = std::shared_ptr<IBaseClient>(new Base64ProtocolDecorator(srv, host, port, device, connectOk, connectFail)); // декоратор сам ответ усешно соединение или нет
 			clientDelegate->open();
 			clientDelegate->receiveNewData.connect(boost::bind(&ModemClient::emmitNewDataFromDelegate, this, _1));
 			clientDelegate->finishSession.connect(boost::bind(&ModemClient::stopCommandHandler, this));

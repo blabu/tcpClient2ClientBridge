@@ -1,5 +1,6 @@
 #include "ComunicationService.hpp"
 #include "MainProjectLoger.hpp"
+#include "clients/Base64ProtocolDecorator.hpp"
 #include <fstream>
 #include <thread>
 #include <json.hpp>
@@ -15,6 +16,11 @@ CommunicationService::CommunicationService(boost::asio::io_service * const s, co
 		ModemClient::setPort(conf->getConfigString("server:port"));
 		SerialClient::setReadTimeout(conf->getConfigInt("serial:timeout"));
 		TcpClient::setReadTimeout(conf->getConfigInt("server:timeout"));
+		if (conf->getConfigString("protocol:base64").find("disabled") != std::string::npos || 
+			conf->getConfigString("protocol:base64").find("disable") != std::string::npos ||
+			conf->getConfigString("protocol:base64") == "0" ) {
+			Base64ProtocolDecorator::disableBase64();
+		}
 		portName = conf->getConfigString("serial:portName");
 	}
 	catch (const nlohmann::detail::out_of_range&) {

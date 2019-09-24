@@ -66,10 +66,10 @@
     <ClInclude Include="Configuration.hpp">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="clients\NewProtocolDecorator.hpp">
+    <ClInclude Include="picosha2.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="picosha2.h">
+    <ClInclude Include="clients\Base64ProtocolDecorator.hpp">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>
@@ -110,7 +110,7 @@
     <ClCompile Include="Configuration.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="clients\NewProtocolDecorator.cpp">
+    <ClCompile Include="clients\Base64ProtocolDecorator.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>
