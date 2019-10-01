@@ -29,6 +29,6 @@ void Base64ProtocolDecorator::parseMessage(const message_ptr m) { // Принял данн
 	if (head.headerSize == 0 || head.packetSize == 0) return;
 	std::size_t decodedSize = boost::beast::detail::base64::decoded_size(head.packetSize);
 	boost::scoped_array<std::uint8_t> dat(new std::uint8_t[decodedSize]);
-	decodedSize = boost::beast::detail::base64::decode(dat.get(), m->toString().c_str() + head.headerSize + ProtocolUtils::headerEnd.size(), head.packetSize).first;
+	decodedSize = boost::beast::detail::base64::decode(dat.get(), m->toString().c_str() + head.headerSize, head.packetSize).first;
 	receiveNewData(message_ptr(new message(decodedSize, dat.get())));
 }

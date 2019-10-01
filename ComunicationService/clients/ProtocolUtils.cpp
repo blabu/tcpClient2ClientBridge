@@ -21,7 +21,7 @@ std::string ProtocolUtils::base64_encode(std::string const& s) {
 header ProtocolUtils::parseHeader(const message_ptr m) {
 	header res;
 	auto mess(m->toString());
-	auto headerSize = mess.find_first_of(headerEnd);
+	auto headerSize = mess.find(headerEnd);
 	if (headerSize == std::string::npos) { // НЕ Нашли конец заголовка
 		throw std::invalid_argument("Undefined header size or can not find header end in " + mess);
 	}
@@ -31,7 +31,7 @@ header ProtocolUtils::parseHeader(const message_ptr m) {
 	if (parsedParam.size() != 5) {
 		throw std::invalid_argument("Incorrect number of data in header " + header);
 	}
-	res.headerSize = headerSize;
+	res.headerSize = headerSize + headerEnd.size();
 	res.to = parsedParam[2];
 	res.from = parsedParam[1];
 	res.msgType = static_cast<messageTypes>(std::stoi(parsedParam[3], 0, 16));

@@ -20,11 +20,11 @@ struct header {
 
 class ProtocolUtils
 {
+	static const std::string headerEnd;
 	ProtocolUtils() = delete;
 public:
 	~ProtocolUtils() = default;
 public:
-	static const std::string headerEnd;
 	static std::string base64_encode(std::uint8_t const* data, std::size_t len);
 	static std::string base64_encode(std::string const& s);
 	static header parseHeader(const message_ptr m);
