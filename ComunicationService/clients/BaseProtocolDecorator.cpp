@@ -83,7 +83,6 @@ virtual void logTransaction() const = 0;
 При входе в деструктор базового класса наш объект становится объектом базового класса,
 и все части C++ – виртуальные функции, оператор dynamic_cast и т. п. – воспринимают его именно так. 
 */
-
 BaseProtocolDecorator::BaseProtocolDecorator(boost::asio::io_service *const srv, const std::string& host, const std::string& port, 
 										   const std::string& deviceID, const std::string& answerIfOK, const std::string& answerIfError) : 
 	answerOK(answerIfOK),
@@ -100,7 +99,7 @@ BaseProtocolDecorator::BaseProtocolDecorator(boost::asio::io_service *const srv,
 	// В конструкторе НИКОГДА НЕ ИСПОЛЬЗУЙ ВИРТУАЛЬНЫЕ ФУНКЦИИ (смотри комментарий выше)
 }
 
-//check INIT OK answer initOkMessage
+// Check INIT OK answer initOkMessage
 void BaseProtocolDecorator::initHandler(const message_ptr m){
 	globalLog.addLog(Loger::L_TRACE, "In init handler");
 	std::string resultMessage(m->toString());
