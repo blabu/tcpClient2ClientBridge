@@ -13,7 +13,7 @@ CommunicationService::CommunicationService(boost::asio::io_service * const s, co
 	try {
 		Loger::setShowLevel(conf->getConfigInt("log:showLogLevel"));
 		Loger::setSaveLevel(conf->getConfigInt("log:saveLogLevel"));
-		Loger::SetAddr("log:path");
+		Loger::SetAddr(conf->getConfigString("log:path"));
 		ModemClient::setHost(conf->getConfigString("server:host"));
 		ModemClient::setPort(conf->getConfigString("server:port"));
 		SerialClient::setReadTimeout(conf->getConfigInt("serial:timeout"));

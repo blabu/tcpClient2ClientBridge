@@ -20,7 +20,15 @@ std::string BinaryProtocolDecorator::formMessage(const std::string & to, message
 }
 
 void BinaryProtocolDecorator::parseMessage(const message_ptr m){
-	header head = ProtocolUtils::parseHeader(m);
-	
+	header head;
+	try {
+		head = ProtocolUtils::parseHeader(m);
+	}
+	catch (std::invalid_argument er) {
+		globalLog.addLog(Loger::L_ERROR, er.what());
+		return;
+	}
+	if (!checkHeader(head)) return;
+	receiveNewData(message_ptr(new message(head.packetSize, m->data()+head.headerSize)));
 }
 
