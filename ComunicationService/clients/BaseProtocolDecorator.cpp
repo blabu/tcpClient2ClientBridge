@@ -201,6 +201,8 @@ void BaseProtocolDecorator::open() {
 	globalLog.addLog(Loger::L_INFO, "Form init string ", c.connectionString);
 	clientDelegate = std::shared_ptr<TcpClient>(new TcpClient(srv, c));
 	clientDelegate->finishSession.connect([this]() { this->receiveNewData(message_ptr(new message(this->answerError))); this->finishSession(); });
+	clientDelegate->receiveNewData.disconnect_all_slots();
+	clientDelegate->receiveNewData.connect(boost::bind(&BaseProtocolDecorator::initHandler, this, _1));
 	clientDelegate->open();
 }
 
