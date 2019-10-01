@@ -6,15 +6,14 @@
 #include "messagesDTO.hpp"
 
 // BinaryProtocolDecorator - добавляет поддержку передачи бинарных данных по протоколу
-class BinaryProtocolDecorator : public BaseProtocolDecorator
-{
+class BinaryProtocolDecorator : public BaseProtocolDecorator {
 	static const std::string headerTemplateBinary;
 	BinaryProtocolDecorator() = delete;
 	BinaryProtocolDecorator(BinaryProtocolDecorator&) = delete;
 protected: 
-	virtual std::vector<std::uint8_t> formMessage(const std::string& to, messageTypes t, std::size_t sz, const std::uint8_t* data) const;
-	virtual std::string formMessage(const std::string& to, messageTypes t, const std::string& data) const;
-	virtual void parseMessage(const message_ptr m);
+	std::vector<std::uint8_t> formMessage(const std::string& to, messageTypes t, std::size_t sz, const std::uint8_t* data) const;
+	std::string formMessage(const std::string& to, messageTypes t, const std::string& data) const;
+	void parseMessage(const message_ptr m);
 public:
 	BinaryProtocolDecorator(boost::asio::io_service *const srv, const std::string& host, const std::string& port,
 		const std::string& deviceID, const std::string& answerIfOK, const std::string& answerIfError)

@@ -14,9 +14,7 @@ std::vector<std::uint8_t> BinaryProtocolDecorator::formMessage(const std::string
 }
 
 std::string BinaryProtocolDecorator::formMessage(const std::string & to, messageTypes t, const std::string & data) const {
-	std::string header = (boost::format(headerTemplateBinary)%localName%to%t%data.size()).str();
-	header.append(data);
-	return header;
+	return (boost::format(headerTemplateBinary)%localName%to%t%data.size()).str().append(data);
 }
 
 void BinaryProtocolDecorator::parseMessage(const message_ptr m){

@@ -29,7 +29,7 @@ protected:
 	bool checkHeader(const header& h);
 	// formMessage - переопределения этого метода необходимо в случае бинарного протокола для отпраки бинарных данных
 	virtual std::vector<std::uint8_t> formMessage(const std::string& to, messageTypes t, std::size_t sz, const std::uint8_t* data) const = 0;
-	virtual std::string formMessage(const std::string& to, messageTypes t, const std::string& data) const;
+	virtual std::string formMessage(const std::string& to, messageTypes t, const std::string& data) const = 0;
 	// parseMessage - переопределения этого метода необходимо в случае бинарного протокола для получения бинарных данных
 	virtual void parseMessage(const message_ptr m) = 0;
 public:
