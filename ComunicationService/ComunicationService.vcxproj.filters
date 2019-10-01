@@ -66,13 +66,19 @@
     <ClInclude Include="picosha2.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="clients\Base64ProtocolDecorator.hpp">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
     <ClInclude Include="clients\OldProtocolDecorator.hpp">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="BinaryProtocolDecorator.hpp">
+    <ClInclude Include="clients\BaseProtocolDecorator.hpp">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="clients\BinaryProtocolDecorator.hpp">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="clients\ProtocolUtils.hpp">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="clients\Base64ProtocolDecorator.hpp">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>
@@ -107,16 +113,22 @@
     <ClCompile Include="ComunicationService.hpp">
       <Filter>Файлы заголовков</Filter>
     </ClCompile>
-    <ClCompile Include="clients\ProtocolDecorator.cpp">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
     <ClCompile Include="Configuration.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="clients\Base64ProtocolDecorator.cpp">
+    <ClCompile Include="clients\OldProtocolDecorator.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="BinaryProtocolDecorator.cpp">
+    <ClCompile Include="clients\BaseProtocolDecorator.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="clients\BinaryProtocolDecorator.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="clients\ProtocolUtils.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="clients\Base64ProtocolDecorator.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>

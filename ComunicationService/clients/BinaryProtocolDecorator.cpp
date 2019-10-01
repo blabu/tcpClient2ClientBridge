@@ -1,4 +1,5 @@
 #include "BinaryProtocolDecorator.hpp"
+#include "ProtocolUtils.hpp"
 #include <boost/format.hpp>
 
 const std::string BinaryProtocolDecorator::headerTemplateBinary("$V1;%s;%s;%x;%x###"); // localName, toName, messageType, messageSize, message
@@ -12,6 +13,14 @@ std::vector<std::uint8_t> BinaryProtocolDecorator::formMessage(const std::string
 	return res;
 }
 
-BinaryProtocolDecorator::BinaryProtocolDecorator(boost::asio::io_service *const srv, const std::string& host, const std::string& port,
-	const std::string& deviceID, const std::string& answerIfOK, const std::string& answerIfError) : Base64ProtocolDecorator(srv,host,port,deviceID,answerIfOK,answerIfError){
+std::string BinaryProtocolDecorator::formMessage(const std::string & to, messageTypes t, const std::string & data) const {
+	std::string header = (boost::format(headerTemplateBinary)%localName%to%t%data.size()).str();
+	header.append(data);
+	return header;
 }
+
+void BinaryProtocolDecorator::parseMessage(const message_ptr m){
+	header head = ProtocolUtils::parseHeader(m);
+	
+}
+

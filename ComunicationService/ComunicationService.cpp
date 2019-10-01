@@ -1,6 +1,6 @@
 #include "ComunicationService.hpp"
 #include "MainProjectLoger.hpp"
-#include "clients/Base64ProtocolDecorator.hpp"
+#include "clients/TcpClient.hpp"
 #include <fstream>
 #include <thread>
 #include <json.hpp>
@@ -13,6 +13,7 @@ CommunicationService::CommunicationService(boost::asio::io_service * const s, co
 	try {
 		Loger::setShowLevel(conf->getConfigInt("log:showLogLevel"));
 		Loger::setSaveLevel(conf->getConfigInt("log:saveLogLevel"));
+		Loger::SetAddr("log:path");
 		ModemClient::setHost(conf->getConfigString("server:host"));
 		ModemClient::setPort(conf->getConfigString("server:port"));
 		SerialClient::setReadTimeout(conf->getConfigInt("serial:timeout"));

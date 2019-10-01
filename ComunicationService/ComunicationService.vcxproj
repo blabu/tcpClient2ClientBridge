@@ -172,13 +172,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="BinaryProtocolDecorator.hpp" />
+    <ClInclude Include="clients\Base64ProtocolDecorator.hpp" />
     <ClInclude Include="clients\BaseClient.hpp" />
+    <ClInclude Include="clients\BinaryProtocolDecorator.hpp" />
     <ClInclude Include="clients\IBaseClient.hpp" />
     <ClInclude Include="clients\messagesDTO.hpp" />
     <ClInclude Include="clients\ModemClient.hpp" />
-    <ClInclude Include="clients\Base64ProtocolDecorator.hpp" />
+    <ClInclude Include="clients\BaseProtocolDecorator.hpp" />
     <ClInclude Include="clients\OldProtocolDecorator.hpp" />
+    <ClInclude Include="clients\ProtocolUtils.hpp" />
     <ClInclude Include="clients\SerialClient.hpp" />
     <ClInclude Include="clients\TcpClient.hpp" />
     <ClInclude Include="Configuration.hpp" />
@@ -193,11 +195,13 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="BinaryProtocolDecorator.cpp" />
-    <ClCompile Include="clients\BaseClient.cpp" />
-    <ClCompile Include="clients\ModemClient.cpp" />
     <ClCompile Include="clients\Base64ProtocolDecorator.cpp" />
-    <ClCompile Include="clients\ProtocolDecorator.cpp" />
+    <ClCompile Include="clients\BaseClient.cpp" />
+    <ClCompile Include="clients\BinaryProtocolDecorator.cpp" />
+    <ClCompile Include="clients\ModemClient.cpp" />
+    <ClCompile Include="clients\BaseProtocolDecorator.cpp" />
+    <ClCompile Include="clients\OldProtocolDecorator.cpp" />
+    <ClCompile Include="clients\ProtocolUtils.cpp" />
     <ClCompile Include="clients\SerialClient.cpp" />
     <ClCompile Include="clients\TcpClient.cpp" />
     <ClCompile Include="ComunicationService.cpp" />
