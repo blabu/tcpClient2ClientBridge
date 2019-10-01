@@ -27,6 +27,7 @@ void BinaryProtocolDecorator::parseMessage(const message_ptr m){
 		return;
 	}
 	if (!checkHeader(head)) return;
+	globalLog.addLog(Loger::L_DEBUG, "Receive binary message size ", std::to_string(head.packetSize));
 	receiveNewData(message_ptr(new message(head.packetSize, m->data()+head.headerSize)));
 }
 
