@@ -1,5 +1,4 @@
 #include "Base64ProtocolDecorator.hpp"
-#include "../MainProjectLoger.hpp"
 #include "../Configuration.hpp"
 #include "../picosha2.h"
 
@@ -23,11 +22,9 @@ std::string Base64ProtocolDecorator::base64_encode(std::string const& s) {
 }
 
 const std::string Base64ProtocolDecorator::headerEnd("###");
-const std::string Base64ProtocolDecorator::headerTemplateBinary("$V1;%s;%s;%x;%x###%s"); // localName, toName, messageType, messageSize, message
 const std::string Base64ProtocolDecorator::headerTemplate("$V1;%s;%s;%x;%x###%s"); // localName, toName, messageType, messageSize, message
 const std::string Base64ProtocolDecorator::initOkMessage("$V1;0;%s;6;7###INIT OK"); // local name
 const std::string Base64ProtocolDecorator::connectOkMessage("$V1;%s;%s;8;a###CONNECT OK"); // to name, local name
-bool Base64ProtocolDecorator::base64OutputEnabled = true;
 
 Base64ProtocolDecorator::Base64ProtocolDecorator(boost::asio::io_service *const srv, const std::string& host, const std::string& port, 
 										   const std::string& deviceID, const std::string& answerIfOK, const std::string& answerIfError) : 
@@ -60,14 +57,8 @@ Base64ProtocolDecorator::Base64ProtocolDecorator(boost::asio::io_service *const 
 }
 
 std::vector<std::uint8_t> Base64ProtocolDecorator::formMessage(const std::string& to, messageTypes t, std::size_t sz, const std::uint8_t* data) const {
-	if (base64OutputEnabled) { // Если Base64 включен, то работаем со строками
 		auto res = formMessage(to, t, base64_encode(data, sz));
 		return std::vector<std::uint8_t>(res.cbegin(), res.cend());
-	}
-	auto header = (boost::format(headerTemplateBinary)%localName%to%t%sz).str();
-	std::vector<std::uint8_t> res(header.cbegin(), header.cend());
-	for (std::size_t i = 0; i < sz; i++) res.push_back(data[i]);
-	return res;
 }
 
 std::string Base64ProtocolDecorator::formMessage(const std::string& to, messageTypes t, const std::string& data) const {

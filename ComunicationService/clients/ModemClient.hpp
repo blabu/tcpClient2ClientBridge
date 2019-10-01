@@ -6,7 +6,6 @@
 #include <map>
 #include <boost/asio.hpp>
 #include <boost/asio/io_service.hpp>
-#include "ProtocolDecorator.hpp"
 
 /*
 ModemClient - реализует базовый интерфейс клиента. 
@@ -24,22 +23,17 @@ class ModemClient : public IBaseClient {
 
 
 	boost::asio::io_service* const srv;
+	const bool isBinary;
 	std::atomic<bool> isStarted;
 	std::atomic<bool> isFirstMessage;
-
 	std::shared_ptr<IBaseClient> clientDelegate;
-
 	ModemClient() = delete;
 	ModemClient(const ModemClient&) = delete;
-
 	void emmitNewDataFromDelegate(const message_ptr m) {
 		receiveNewData(m);
 	}
-
 	void stopCommandHandler();
-
 	std::string startCommandHandler(const std::string& command);
-
 	std::string write(const std::string& command, const std::string& defaultAnswer = "OK\r\n");
 
 public:
@@ -47,11 +41,10 @@ public:
 	В качестве параметра используется адрес файла со словарем
 	словарь представляет из себя масив json объектов с минимуму двумя параметрами command и answer
 	*/
-	ModemClient(boost::asio::io_service* const service) : srv(service) {}
+	ModemClient(boost::asio::io_service* const service, bool isBinary) : srv(service), isBinary(isBinary) {}
 
 	void open() {}
 	void close() noexcept {}
-
 	void sendNewData(const message_ptr& msg);
 
 	static void setHost(const std::string& h) { host = h; }
@@ -59,7 +52,6 @@ public:
 	static void appendNewCommand(const std::string& command, const std::string& answer) {
 		vocabulary.insert(std::pair<std::string, std::string>(command, answer));
 	}
-
 	static void setConnectOKAnswer(const std::string& answer) { connectOk = answer; }
 	static void setConnectFailAnswer(const std::string& answer) { connectFail = answer; }
 };

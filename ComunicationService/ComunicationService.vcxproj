@@ -172,12 +172,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="BinaryProtocolDecorator.hpp" />
     <ClInclude Include="clients\BaseClient.hpp" />
     <ClInclude Include="clients\IBaseClient.hpp" />
     <ClInclude Include="clients\messagesDTO.hpp" />
     <ClInclude Include="clients\ModemClient.hpp" />
     <ClInclude Include="clients\Base64ProtocolDecorator.hpp" />
-    <ClInclude Include="clients\ProtocolDecorator.hpp" />
+    <ClInclude Include="clients\OldProtocolDecorator.hpp" />
     <ClInclude Include="clients\SerialClient.hpp" />
     <ClInclude Include="clients\TcpClient.hpp" />
     <ClInclude Include="Configuration.hpp" />
@@ -192,6 +193,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="BinaryProtocolDecorator.cpp" />
     <ClCompile Include="clients\BaseClient.cpp" />
     <ClCompile Include="clients\ModemClient.cpp" />
     <ClCompile Include="clients\Base64ProtocolDecorator.cpp" />

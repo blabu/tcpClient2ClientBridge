@@ -1,15 +1,15 @@
-#include "ProtocolDecorator.hpp"
+#include "OldProtocolDecorator.hpp"
 #include "../MainProjectLoger.hpp"
 #include "../Configuration.hpp"
 #include <boost/beast/core/detail/base64.hpp>
 #include <boost/scoped_array.hpp>
 
-const std::string ProtocolDecorator::connectHeader("$V23="); // "$V23=" - передача только строковых данных как есть (в конце добавляем признак конца строки)
-const char ProtocolDecorator::startPackage = '#';
-const char ProtocolDecorator::stopPackage = '\n';
+const std::string OldProtocolDecorator::connectHeader("$V23="); // "$V23=" - передача только строковых данных как есть (в конце добавляем признак конца строки)
+const char OldProtocolDecorator::startPackage = '#';
+const char OldProtocolDecorator::stopPackage = '\n';
 
 
-void ProtocolDecorator::emmitNewDataSlot(const message_ptr m) { // Принял данные от clientDelegate передаю их дальше из сети в COM порт
+void OldProtocolDecorator::emmitNewDataSlot(const message_ptr m) { // Принял данные от clientDelegate передаю их дальше из сети в COM порт
 	globalLog.addLog(Loger::L_INFO, "Receive new messages ", m->toString(), ". And try decode it");
 	std::size_t sz = m->currentSize();
 	if (m->data() != nullptr && sz > 2) { // Парсим сообщение
@@ -36,16 +36,16 @@ void ProtocolDecorator::emmitNewDataSlot(const message_ptr m) { // Принял 
 	}
 }
 
-ProtocolDecorator::ProtocolDecorator(boost::asio::io_service * const srv, const std::string & host, const std::string & port, const std::string & deviceID) {
+OldProtocolDecorator::OldProtocolDecorator(boost::asio::io_service * const srv, const std::string & host, const std::string & port, const std::string & deviceID) {
 	ConnectionProperties c;
 	auto conf = Configuration::getConfiguration("");
 	c.Host = host; c.Port = port;
 	c.connectionString = connectHeader + conf->getConfigString("user:name") + ";" + deviceID + ";" + stopPackage; //protocol specific connection string 
 	clientDelegate = std::shared_ptr<TcpClient>(new TcpClient(srv, c));
-	clientDelegate->receiveNewData.connect(boost::bind(&ProtocolDecorator::emmitNewDataSlot, this, _1));
+	clientDelegate->receiveNewData.connect(boost::bind(&OldProtocolDecorator::emmitNewDataSlot, this, _1));
 }
 
-void ProtocolDecorator::sendNewData(const message_ptr & msg) {
+void OldProtocolDecorator::sendNewData(const message_ptr & msg) {
 	if (clientDelegate != nullptr && clientDelegate.get() != nullptr) {
 		std::size_t encodedSize = boost::beast::detail::base64::encoded_size(msg->currentSize());
 		boost::scoped_array<std::uint8_t> dat(new std::uint8_t[encodedSize+2]);
@@ -58,13 +58,13 @@ void ProtocolDecorator::sendNewData(const message_ptr & msg) {
 	}
 }
 
-void ProtocolDecorator::close() noexcept {
+void OldProtocolDecorator::close() noexcept {
 	if (clientDelegate != nullptr && clientDelegate.get() != nullptr) {
 		clientDelegate->close();
 	}
 }
 
-void ProtocolDecorator::open() {
+void OldProtocolDecorator::open() {
 	if (clientDelegate != nullptr && clientDelegate.get() != nullptr) {
 		clientDelegate->open();
 	}

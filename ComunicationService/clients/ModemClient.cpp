@@ -2,6 +2,7 @@
 #include <regex>
 #include "ModemClient.hpp"
 #include "Base64ProtocolDecorator.hpp"
+#include "BinaryProtocolDecorator.hpp"
 #include "../MainProjectLoger.hpp"
 
 std::map<std::string, std::string> ModemClient::vocabulary;
@@ -53,8 +54,8 @@ std::string ModemClient::startCommandHandler(const std::string & command) {
 			globalLog.addLog(Loger::L_TRACE, "Try start session");
 			isStarted.store(true);
 			isFirstMessage.store(true);
-			//clientDelegate = std::shared_ptr<IBaseClient>(new ProtocolDecorator(srv, host, port, device));
-			clientDelegate = std::shared_ptr<IBaseClient>(new Base64ProtocolDecorator(srv, host, port, device, connectOk, connectFail)); // декоратор сам ответ усешно соединение или нет
+			if(isBinary) clientDelegate = std::shared_ptr<IBaseClient>(new BinaryProtocolDecorator(srv, host, port, device, connectOk, connectFail)); // декоратор сам ответ усешно соединение или нет
+			else clientDelegate = std::shared_ptr<IBaseClient>(new Base64ProtocolDecorator(srv, host, port, device, connectOk, connectFail)); // декоратор сам ответ усешно соединение или нет
 			clientDelegate->open();
 			clientDelegate->receiveNewData.connect(boost::bind(&ModemClient::emmitNewDataFromDelegate, this, _1));
 			clientDelegate->finishSession.connect(boost::bind(&ModemClient::stopCommandHandler, this));

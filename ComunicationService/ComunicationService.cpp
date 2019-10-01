@@ -9,6 +9,7 @@
 */
 CommunicationService::CommunicationService(boost::asio::io_service * const s, const std::string & atCommandFile) : srv(s), conf(Configuration::getConfiguration(atCommandFile)) {
 	std::string portName;
+	bool isBinaryProtocolDecorator = false;
 	try {
 		Loger::setShowLevel(conf->getConfigInt("log:showLogLevel"));
 		Loger::setSaveLevel(conf->getConfigInt("log:saveLogLevel"));
@@ -19,7 +20,7 @@ CommunicationService::CommunicationService(boost::asio::io_service * const s, co
 		if (conf->getConfigString("protocol:base64").find("disabled") != std::string::npos || 
 			conf->getConfigString("protocol:base64").find("disable") != std::string::npos ||
 			conf->getConfigString("protocol:base64") == "0" ) {
-			Base64ProtocolDecorator::disableBase64();
+			isBinaryProtocolDecorator = true;
 		}
 		portName = conf->getConfigString("serial:portName");
 	}
@@ -34,7 +35,7 @@ CommunicationService::CommunicationService(boost::asio::io_service * const s, co
 		ModemClient::appendNewCommand(el.key(), el.value().get<std::string>());
 	}
 	
-	modem = std::shared_ptr<ModemClient>(new ModemClient(srv));
+	modem = std::shared_ptr<ModemClient>(new ModemClient(srv, isBinaryProtocolDecorator));
 
 	serial = std::shared_ptr<SerialClient>(new SerialClient(srv, portName));
 	try {

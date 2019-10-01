@@ -60,9 +60,6 @@
     <ClInclude Include="clients\TcpClient.hpp">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="clients\ProtocolDecorator.hpp">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
     <ClInclude Include="Configuration.hpp">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
@@ -70,6 +67,12 @@
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="clients\Base64ProtocolDecorator.hpp">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="clients\OldProtocolDecorator.hpp">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="BinaryProtocolDecorator.hpp">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>
@@ -111,6 +114,9 @@
       <Filter>Исходные файлы</Filter>
     </ClCompile>
     <ClCompile Include="clients\Base64ProtocolDecorator.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="BinaryProtocolDecorator.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>
