@@ -14,13 +14,13 @@ class SerialClient : public BaseClient {
 
 	void readHandler(const boost::system::error_code& er, std::size_t byteTransfered);
 	void read();
-	void write();
+	void write() override;
 public:
 	SerialClient(boost::asio::io_service* const srv, const std::string& device);
-	void close() noexcept {
+	void close() noexcept override {
 		if (sp.is_open()) { boost::system::error_code er; sp.cancel(er); sp.close(er); }
 	}
-	void open();
+	void open() override;
 	static void setReadTimeout(unsigned int timeout) {
 		receiveDataTimeout = timeout;
 	}

@@ -43,9 +43,9 @@ public:
 	*/
 	ModemClient(boost::asio::io_service* const service, bool isBinary) : srv(service), isBinary(isBinary) {}
 
-	void open() {}
-	void close() noexcept {}
-	void sendNewData(const message_ptr& msg);
+	void open() override {}
+	void close() noexcept override {}
+	void sendNewData(const message_ptr& msg) override;
 
 	static void setHost(const std::string& h) { host = h; }
 	static void setPort(const std::string& p) { port = p; }

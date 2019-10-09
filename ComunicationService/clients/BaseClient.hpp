@@ -30,7 +30,7 @@ protected:
 public:
 	BaseClient(boost::asio::io_service*const srv, std::size_t readBufferSize, std::chrono::milliseconds ReadTmeout);
 	virtual ~BaseClient() {}
-	void sendNewData(const message_ptr& msg); // Частичная реализация интерфейса IBaseClient
+	void sendNewData(const message_ptr& msg) override; // Частичная реализация интерфейса IBaseClient
 };
 
 

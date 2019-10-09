@@ -29,14 +29,14 @@ class TcpClient : public BaseClient {
 	void connect();
     void readHandler(const boost::system::error_code& er, std::size_t sz);
 	void read();
-	void write();
+	void write() override;
 
 	TcpClient() = delete;
 	TcpClient(TcpClient&) = delete;
 public:
 	TcpClient(boost::asio::io_service *const srv, const ConnectionProperties& c);
-	void open();
-	void close() noexcept {
+	void open() override;
+	void close() noexcept override {
 		if (sock.is_open()) { boost::system::error_code er; sock.cancel(er); sock.close(er); }
 	}
 	virtual ~TcpClient();

@@ -37,8 +37,8 @@ public:
 						const std::string& deviceID, const std::string& answerIfOK, const std::string& answerIfError);
 	virtual ~BaseProtocolDecorator() = default;
 	void sendNewData(const message_ptr& msg);
-	void close() noexcept;
-	void open();
+	void close() noexcept override;
+	void open() override;
 };
 
 #endif //BASE_PROTOCOL_DECORATOR
