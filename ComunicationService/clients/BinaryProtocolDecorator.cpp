@@ -1,6 +1,7 @@
 #include "BinaryProtocolDecorator.hpp"
 #include "ProtocolUtils.hpp"
 #include <boost/format.hpp>
+#include <string>
 
 const std::string BinaryProtocolDecorator::headerTemplateBinary("$V1;%s;%s;%x;%x###"); // localName, toName, messageType, messageSize, message
 
@@ -28,6 +29,7 @@ void BinaryProtocolDecorator::parseMessage(const message_ptr m){
 	}
 	if (!checkHeader(head)) return;
 	globalLog.addLog(Loger::L_DEBUG, "Receive binary message size ", std::to_string(head.packetSize));
+	globalLog.addLog(Loger::L_INFO, "Receive binary message header ", m->toString().substr(0, head.headerSize));
 	receiveNewData(message_ptr(new message(head.packetSize, m->data()+head.headerSize)));
 }
 
