@@ -4,7 +4,7 @@
 #include <boost/format.hpp>
 #include <boost/beast/core/detail/base64.hpp>
 
-const std::string Base64ProtocolDecorator::headerTemplate("$V1;%s;%s;%x;%x###%s"); // localName, toName, messageType, messageSize, message
+const std::string Base64ProtocolDecorator::headerTemplate("$V1;%s;%s;%x;4;%x###%s"); // localName, toName, messageType, messageSize, message
 
 std::vector<std::uint8_t> Base64ProtocolDecorator::formMessage(const std::string& to, messageTypes t, std::size_t sz, const std::uint8_t* data) const {
 	auto res = formMessage(to, t, ProtocolUtils::base64_encode(data, sz));

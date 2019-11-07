@@ -11,8 +11,10 @@
 #include <cstdlib>
 #include <chrono>
 
-const std::string BaseProtocolDecorator::initOkMessage("$V1;0;%s;6;7###INIT OK"); // local name
-const std::string BaseProtocolDecorator::connectOkMessage("$V1;%s;%s;8;a###CONNECT OK"); // to name, local name
+const std::string BaseProtocolDecorator::initOkMessage("$V1;0;%s;6;3;7###INIT OK"); // local name
+const std::string BaseProtocolDecorator::initOkMsg("INIT OK");
+const std::string BaseProtocolDecorator::connectOkMessage("$V1;%s;%s;8;3;a###CONNECT OK"); // to name, local name
+const std::string BaseProtocolDecorator::connectOkMsg("CONNECT OK");
 
 /*
 https://www.e-reading.club/chapter.php/1002058/30/Mayers_-_Effektivnoe_ispolzovanie_CPP.html
@@ -105,7 +107,7 @@ void BaseProtocolDecorator::initHandler(const message_ptr m){
 	std::string resultMessage(m->toString());
 	std::string waitMessage((boost::format(initOkMessage) % localName).str());
 	globalLog.addLog(Loger::L_TRACE, "Try compare receive message ", resultMessage, " and wait message ", waitMessage);
-	if (resultMessage == waitMessage) { // Подключение и инициализация удалась
+	if (resultMessage == waitMessage || resultMessage.find(initOkMsg) != std::string::npos) { // Подключение и инициализация удалась
 		globalLog.addLog(Loger::L_TRACE, "Try connect to ", connectTo);
 		clientDelegate->receiveNewData.disconnect_all_slots();
 		clientDelegate->receiveNewData.connect(boost::bind(&BaseProtocolDecorator::connectToDeviceHandler, this, _1));
@@ -125,7 +127,7 @@ void BaseProtocolDecorator::connectToDeviceHandler(const message_ptr m) {
 	std::string resultMessage(m->toString());
 	std::string waitMessage ((boost::format(connectOkMessage)%connectTo%localName).str());
 	globalLog.addLog(Loger::L_TRACE, "Try compare receive message ", resultMessage, " and wait message ", waitMessage);
-	if (resultMessage == waitMessage) { // Подключение к клиенту удалось
+	if (resultMessage == waitMessage || resultMessage.find(connectOkMsg) != std::string::npos) { // Подключение к клиенту удалось
 		isConnected = true;
 		clientDelegate->receiveNewData.disconnect_all_slots();
 		clientDelegate->receiveNewData.connect(boost::bind(&BaseProtocolDecorator::parseMessage, this, _1));
@@ -205,4 +207,3 @@ void BaseProtocolDecorator::open() {
 	clientDelegate->receiveNewData.connect(boost::bind(&BaseProtocolDecorator::initHandler, this, _1));
 	clientDelegate->open();
 }
-

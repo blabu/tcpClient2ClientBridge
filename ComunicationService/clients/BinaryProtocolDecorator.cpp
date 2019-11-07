@@ -3,7 +3,7 @@
 #include <boost/format.hpp>
 #include <string>
 
-const std::string BinaryProtocolDecorator::headerTemplateBinary("$V1;%s;%s;%x;%x###"); // localName, toName, messageType, messageSize, message
+const std::string BinaryProtocolDecorator::headerTemplateBinary("$V1;%s;%s;%x;4;%x###"); // localName, toName, messageType, messageSize, message
 
 std::vector<std::uint8_t> BinaryProtocolDecorator::formMessage(const std::string & to, messageTypes t, std::size_t sz, const std::uint8_t * data) const {
 	globalLog.addLog(Loger::L_TRACE, "BinaryProtocolDecorator::formMessage to ", to);

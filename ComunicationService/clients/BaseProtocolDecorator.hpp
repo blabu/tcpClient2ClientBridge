@@ -9,6 +9,8 @@
 class BaseProtocolDecorator : public IBaseClient {
 	static const std::string initOkMessage;
 	static const std::string connectOkMessage;
+	static const std::string initOkMsg;
+	static const std::string connectOkMsg;
 	const std::string answerOK;
 	const std::string answerError;
 	bool isConnected;
