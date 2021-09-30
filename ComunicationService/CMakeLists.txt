@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.0)
 set(PROJ_NAME com2tcp)
 project(${PROJ_NAME})
 
-FILE(GLOBAL MAIN_SRC "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp"
+FILE(GLOB MAIN_SRC "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp"
                      "{CMAKE_CURRENT_SOURCE_DIR}/clients/*.cpp"
                      "{CMAKE_CURRENT_SOURCE_DIR}/Logger/*.cpp")
 
@@ -17,6 +17,8 @@ set(CMAKE_EXE_LINKER_FLAGS "-static")
 
 add_executable(${PROJ_NAME} ${MAIN_SRC})
 
+message(STATUS "Try find boost library with static linked")
+
 set(Boost_USE_STATIC_LIBS        ON)
 set(Boost_USE_MULTITHREADED      ON)
 find_package(Boost REQUIRED COMPONENTS system thread regex)
@@ -27,6 +29,5 @@ else()
     message(STATUS "Find Boost version ${Boost_VERSION} at ${Boost_LIBRARY_DIRS}")
 endif()
 
-target_include_directories(${PROJ_NAME} ${Boost_INCLUDE_DIRS})
-target_link_directories(${PROJ_NAME} ${Boost_LIBRARY_DIRS})
+target_include_directories(${PROJ_NAME} PUBLIC ${Boost_INCLUDE_DIRS})
 target_link_libraries(${PROJ_NAME} ${Boost_LIBRARIES})
