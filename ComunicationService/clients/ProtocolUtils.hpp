@@ -3,7 +3,7 @@
 
 #include "messagesDTO.hpp"
 
-const enum messageTypes {
+enum messageTypes {
 	initCMD = 6,
 	connectCMD = 8,
 	dataCMD = 9,

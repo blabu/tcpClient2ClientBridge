@@ -1,6 +1,6 @@
-#include "stdafx.h"
 #include "MainProjectLoger.hpp"
 #include "ComunicationService.hpp"
+#include "Logger/Loger.hpp"
 
 Loger globalLog("GLOBAL");
 
