@@ -3,17 +3,29 @@
 
 #include "messagesDTO.hpp"
 
-enum messageTypes {
-	initCMD = 6,
-	connectCMD = 8,
-	dataCMD = 9,
-	closeCMD = 10,
+
+/*
+	ErrorCOMMAND      uint16 = 1
+	PingCOMMAND       uint16 = 2
+	RegisterCOMMAND   uint16 = 3
+	GenerateCOMMAND   uint16 = 4
+	AuthCOMMAND       uint16 = 5
+	DataCOMMAND       uint16 = 6
+	SaveDataCOMMAND   uint16 = 7
+	PropertiesCOMMAND uint16 = 8
+*/
+enum command {
+	errCMD = 1,
+	pingCMD = 2,
+	initCMD = 5,
+	dataCMD = 6,
+	connectCMD = 9,
 };
 
 struct header {
 	std::size_t headerSize;
 	std::size_t packetSize;
-	messageTypes msgType;
+	command msgType;
 	std::string from;
 	std::string to;
 };
