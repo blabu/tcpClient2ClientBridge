@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.0)
 set(PROJ_NAME com2tcp)
 project(${PROJ_NAME})
+set(CMAKE_BUILD_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${PROJ_NAME}/build)
 
 FILE(GLOB MAIN_SRC "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp"
                      "{CMAKE_CURRENT_SOURCE_DIR}/clients/*.cpp"
