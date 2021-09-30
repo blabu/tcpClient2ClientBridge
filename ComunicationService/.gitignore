@@ -4,3 +4,7 @@ Debug
 Debug/*
 Release
 Release/*
+CMakeCache.txt
+CMakeFiles
+CMakeFiles/*
+Makefile
