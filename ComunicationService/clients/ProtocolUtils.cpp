@@ -22,7 +22,7 @@ header ProtocolUtils::parseHeader(const message_ptr m) {
 	header res;
 	auto mess(m->toString());
 	auto headerSize = mess.find(headerEnd);
-	if (headerSize == std::string::npos) { // НЕ Нашли конец заголовка
+	if (headerSize == std::string::npos) { // пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 		throw std::invalid_argument("Undefined header size or can not find header end in " + mess);
 	}
 	std::string header(m->data(), m->data() + headerSize);
@@ -34,7 +34,7 @@ header ProtocolUtils::parseHeader(const message_ptr m) {
 	res.headerSize = headerSize + headerEnd.size();
 	res.to = parsedParam[2];
 	res.from = parsedParam[1];
-	res.msgType = static_cast<messageTypes>(std::stoi(parsedParam[3], 0, 16));
+	res.msgType = static_cast<command>(std::stoi(parsedParam[3], 0, 16));
 	res.packetSize = std::stoi(parsedParam[4], 0, 16);
 	return res;
 }

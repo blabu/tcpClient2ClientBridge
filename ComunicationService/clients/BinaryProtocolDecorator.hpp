@@ -5,14 +5,14 @@
 #include "../MainProjectLoger.hpp"
 #include "messagesDTO.hpp"
 
-// BinaryProtocolDecorator - добавляет поддержку передачи бинарных данных по протоколу
+// BinaryProtocolDecorator - пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 class BinaryProtocolDecorator : public BaseProtocolDecorator {
 	static const std::string headerTemplateBinary;
 	BinaryProtocolDecorator() = delete;
 	BinaryProtocolDecorator(BinaryProtocolDecorator&) = delete;
 protected: 
-	std::vector<std::uint8_t> formMessage(const std::string& to, messageTypes t, std::size_t sz, const std::uint8_t* data) const override;
-	std::string formMessage(const std::string& to, messageTypes t, const std::string& data) const override;
+	std::vector<std::uint8_t> formMessage(const std::string& to, command t, std::size_t sz, const std::uint8_t* data) const override;
+	std::string formMessage(const std::string& to, command t, const std::string& data) const override;
 	void parseMessage(const message_ptr m) override;
 public:
 	BinaryProtocolDecorator(boost::asio::io_service *const srv, const std::string& host, const std::string& port,
