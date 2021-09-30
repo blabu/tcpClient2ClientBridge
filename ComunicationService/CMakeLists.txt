@@ -1,0 +1,32 @@
+cmake_minimum_required(VERSION 3.0)
+set(PROJ_NAME com2tcp)
+project(${PROJ_NAME})
+
+FILE(GLOBAL MAIN_SRC "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp"
+                     "{CMAKE_CURRENT_SOURCE_DIR}/clients/*.cpp"
+                     "{CMAKE_CURRENT_SOURCE_DIR}/Logger/*.cpp")
+
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/
+                    ${CMAKE_CURRENT_SOURCE_DIR}/clients/
+                    ${CMAKE_CURRENT_SOURCE_DIR}/Logger/ )
+
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-deprecated -fPIC -static")
+set(CMAKE_EXE_LINKER_FLAGS "-static")
+
+add_executable(${PROJ_NAME} ${MAIN_SRC})
+
+set(Boost_USE_STATIC_LIBS        ON)
+set(Boost_USE_MULTITHREADED      ON)
+find_package(Boost REQUIRED COMPONENTS system thread regex)
+if(NOT Boost_FOUND) 
+    message(FATAL_ERROR "Can not find boost system, thread and regex libraries")
+    return()
+else()
+    message(STATUS "Find Boost version ${Boost_VERSION} at ${Boost_LIBRARY_DIRS}")
+endif()
+
+target_include_directories(${PROJ_NAME} ${Boost_INCLUDE_DIRS})
+target_link_directories(${PROJ_NAME} ${Boost_LIBRARY_DIRS})
+target_link_libraries(${PROJ_NAME} ${Boost_LIBRARIES})
